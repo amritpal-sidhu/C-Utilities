@@ -6,7 +6,7 @@
 
 int main(void) {
 
-    rb_node_t *root = NULL;
+    rb_node_s *root = NULL;
     char cmd;
     int value;
 
@@ -19,7 +19,7 @@ int main(void) {
             root = red_black_tree__insert(root, value);
             printf("\n");
             red_black_tree__print(root);
-            printf("\n\n");
+            printf("\n");
         }
         else if (cmd == 'd') {
             scanf("%i", &value);

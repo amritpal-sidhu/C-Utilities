@@ -4,10 +4,14 @@
 #include "red_black_tree.h"
 
 
-enum {
-    RED,
-    BLACK
-};
+// static const rb_node_s nil = {
+
+//     .val = 0,
+//     .parent = NULL,
+//     .left = NULL,
+//     .right = NULL,
+//     .color = BLACK
+// };
 
 /**
  * Private helper functions
@@ -20,7 +24,7 @@ enum {
  * @param  node: pointer to starting node
  * @retval Pointer to the minimum valued node
  */
-static rb_node_t *min_value_node(rb_node_t *node) {
+static rb_node_s *min_value_node(rb_node_s *node) {
 
     if (node) while (node->left) node = node->left;
 
@@ -34,7 +38,7 @@ static rb_node_t *min_value_node(rb_node_t *node) {
  * @param  node: pointer to starting node
  * @retval Pointer to the maximum valued node
  */
-static rb_node_t *max_value_node(rb_node_t *node) {
+static rb_node_s *max_value_node(rb_node_s *node) {
 
     if (node) while (node->right) node = node->right;
 
@@ -42,59 +46,13 @@ static rb_node_t *max_value_node(rb_node_t *node) {
 }
 
 /**
- * @param  node: pointer to starting node
- * @retval Pointer to the successor node
- */
-static rb_node_t *successor(rb_node_t *node) {
-
-    rb_node_t *successor;
-
-    if (node->right)
-        successor = min_value_node(node->right);
-    else {
-
-        successor = node->parent;
-
-        while (successor && successor->right == node) {
-            node = successor;
-            successor = node->parent;
-        }
-    }
-
-    return successor;
-}
-
-/**
- * @param  node: pointer to starting node
- * @retval Pointer to the predecessor node
- */
-static rb_node_t *predecessor(rb_node_t *node) {
-    
-    rb_node_t *predecessor;
-
-    if (node->left)
-        predecessor = max_value_node(node->left);
-    else {
-
-        predecessor = node->parent;
-
-        while (predecessor && predecessor->left == node) {
-            node = predecessor;
-            predecessor = node->parent;
-        }
-    }
-
-    return predecessor;
-}
-
-/**
  * @param  root: reference to a pointer to the root of the tree
  * @param  pivot: pointer to the starting pivot node
  * @retval Pointer to the ending pivot node
  */
-static rb_node_t *left_rotate(rb_node_t **root, rb_node_t *pivot) {
+static rb_node_s *left_rotate(rb_node_s **root, rb_node_s *pivot) {
 
-    rb_node_t *pivot_child = pivot->right;
+    rb_node_s *pivot_child = pivot->right;
 
     pivot->right = pivot_child->left;
     if (pivot->right) pivot->right->parent = pivot;
@@ -119,9 +77,9 @@ static rb_node_t *left_rotate(rb_node_t **root, rb_node_t *pivot) {
  * @param  pivot: pointer to the starting pivot node
  * @retval Pointer to the ending pivot node
  */
-static rb_node_t *right_rotate(rb_node_t **root, rb_node_t *pivot) {
+static rb_node_s *right_rotate(rb_node_s **root, rb_node_s *pivot) {
 
-    rb_node_t *pivot_child = pivot->left;
+    rb_node_s *pivot_child = pivot->left;
 
     pivot->left = pivot_child->right;
     if (pivot->left) pivot->left->parent = pivot;
@@ -142,25 +100,26 @@ static rb_node_t *right_rotate(rb_node_t **root, rb_node_t *pivot) {
 }
 
 /**
- * Recolors and balances nodes after insertion.
+ * Recolors and balances nodes after insertion in the case
+ * the newly inserted node has a parent colored red.
  * 
  * @param  root: reference to a pointer to the root of the tree
  * @param  node: pointer to the starting node
  */
-static void insert_fixup(rb_node_t **root, rb_node_t *node) {
+static void insert_fixup(rb_node_s **root, rb_node_s *node) {
 
     while (node->parent && node->parent->color == RED) {
 
-        rb_node_t *grandparent = node->parent->parent;
+        rb_node_s *grandparent = node->parent->parent;
 
         if (grandparent->left == node->parent) {
 
-            rb_node_t *aunt = grandparent->right;
+            rb_node_s *parents_sibling = grandparent->right;
 
-            if (aunt && aunt->color == RED) {
+            if (parents_sibling && parents_sibling->color == RED) {
 
                 node->parent->color = BLACK;
-                aunt->color = BLACK;
+                parents_sibling->color = BLACK;
                 grandparent->color = RED;
                 node = grandparent;
             }
@@ -178,12 +137,12 @@ static void insert_fixup(rb_node_t **root, rb_node_t *node) {
         }
         else {
 
-            rb_node_t *aunt = grandparent->left;
+            rb_node_s *parents_sibling = grandparent->left;
 
-            if (aunt && aunt->color == RED) {
+            if (parents_sibling && parents_sibling->color == RED) {
 
                 node->parent->color = BLACK;
-                aunt->color = BLACK;
+                parents_sibling->color = BLACK;
                 grandparent->color = RED;
                 node = grandparent;
             }
@@ -210,17 +169,119 @@ static void insert_fixup(rb_node_t **root, rb_node_t *node) {
  * @param  root: reference to a pointer to the root of the tree
  * @param  node: pointer to the starting node
  */
-static void delete_fixup(rb_node_t **root, rb_node_t *node) {
+static void delete_fixup(rb_node_s **root, rb_node_s *node) {
     
+    while (node && node != *root && node->color == BLACK) {
+
+        if (node->parent->left == node) {
+
+            rb_node_s *sibling = node->parent->right;
+
+            if (sibling) {
+
+                if (sibling->color == RED) {
+                    
+                    sibling->color = BLACK;
+                    node->parent->color = RED;
+                    left_rotate(root, node->parent);
+                    sibling = node->parent->right;
+                }
+
+                if ( (!sibling->left || sibling->left->color == BLACK)
+                    && (!sibling->right || sibling->right->color == BLACK) ) {
+
+                    sibling->color = RED;
+                    node = node->parent;
+                }
+                else {
+
+                    if (!sibling->right || sibling->right->color == BLACK) {
+
+                        sibling->left->color = BLACK;
+                        sibling->color = RED;
+                        right_rotate(root, sibling);
+                        sibling = node->parent->right;
+                    }
+
+                    sibling->color = node->parent->color;
+                    node->parent->color = BLACK;
+                    sibling->right->color = BLACK;
+                    left_rotate(root, node->parent);
+                    node = *root;
+                }
+            }
+        }
+        else {
+
+            rb_node_s *sibling = node->parent->left;
+
+            if (sibling) {
+
+                if (sibling->color == RED) {
+                    
+                    sibling->color = BLACK;
+                    node->parent->color = RED;
+                    right_rotate(root, node->parent);
+                    sibling = node->parent->left;
+                }
+
+                if ( (!sibling->left || sibling->left->color == BLACK) 
+                    && (!sibling->right || sibling->right->color == BLACK) ) {
+
+                    sibling->color = RED;
+                    node = node->parent;
+                }
+                else {
+
+                    if (!sibling->left || sibling->left->color == BLACK) {
+
+                        sibling->right->color = BLACK;
+                        sibling->color = RED;
+                        left_rotate(root, sibling);
+                        sibling = node->parent->left;
+                    }
+
+                    sibling->color = node->parent->color;
+                    node->parent->color = BLACK;
+                    sibling->left->color = BLACK;
+                    right_rotate(root, node->parent);
+                    node = *root;
+                }
+            }
+        }
+    }
+
+    node->color = BLACK;
+}
+
+/**
+ * @param  root: reference to a pointer to the root of the tree
+ * @param  old_node: pointer to the node to be transplanted
+ * @param  new_node: pointer to the node to transplant with
+ */
+static void transplant(rb_node_s **root, const rb_node_s *old_node, rb_node_s *new_node) {
+
+    if (*root && old_node) {
+
+        if (old_node->parent == NULL)
+            *root = new_node;
+        else if (old_node->parent->left == old_node)
+            old_node->parent->left = new_node;
+        else
+            old_node->parent->right = new_node;
+
+        if (new_node)
+            new_node->parent = old_node->parent;
+    }
 }
 
 /**
  * Public function definitions
  */
-rb_node_t *red_black_tree__insert(rb_node_t *root, const int val) {
+rb_node_s *red_black_tree__insert(rb_node_s *root, const int val) {
 
-    rb_node_t *new_node = malloc(sizeof(rb_node_t));
-    rb_node_t *cur, *parent;
+    rb_node_s *new_node = malloc(sizeof(rb_node_s));
+    rb_node_s *cur, *parent;
 
     new_node->val = val;
     new_node->parent = NULL;
@@ -259,50 +320,105 @@ rb_node_t *red_black_tree__insert(rb_node_t *root, const int val) {
     return root;
 }
 
-rb_node_t *red_black_tree__delete(rb_node_t *root, const int val) {
+rb_node_s *red_black_tree__delete(rb_node_s *root, const int val) {
 
     if (root) {
 
-        if (val < root->val)
-            root->left = red_black_tree__delete(root->left, val);
+        rb_node_s *node_to_delete = root;
 
-        else if (val > root->val)
-            root->right = red_black_tree__delete(root->right, val);
+        while (node_to_delete && node_to_delete->val != val) {
+            if (val < node_to_delete->val)
+                node_to_delete = node_to_delete->left;
+            else
+                node_to_delete = node_to_delete->right;
+        }
 
-        else {
+        if (node_to_delete) {
 
-            rb_node_t *node_to_delete = root;
+            rb_node_color_e original_color = node_to_delete->color;
+            rb_node_s *fixup_node;
+            int free_mem_flag = 0;
 
-            if ( !node_to_delete->left && !node_to_delete->right ) {
-                root = NULL;
-                free(node_to_delete);
-            }
-            else if ( !node_to_delete->left ) {
-                root = node_to_delete->right;
-                free(node_to_delete);
+            if ( !node_to_delete->left ) {
+                
+                fixup_node = node_to_delete->right;
+                if (!fixup_node) {
+                    fixup_node = malloc(sizeof(rb_node_s));
+                    fixup_node->color = BLACK;
+                    fixup_node->parent = node_to_delete;
+                    fixup_node->left = NULL;
+                    fixup_node->right = NULL;
+                    node_to_delete->right = fixup_node;
+                    free_mem_flag = 1;
+                }
+                transplant(&root, node_to_delete, node_to_delete->right);
             }
             else if ( !node_to_delete->right ) {
-                root = node_to_delete->left;
-                free(node_to_delete);
+                
+                fixup_node = node_to_delete->left;
+                if (!fixup_node) {
+                    fixup_node = malloc(sizeof(rb_node_s));
+                    fixup_node->color = BLACK;
+                    fixup_node->parent = node_to_delete;
+                    fixup_node->left = NULL;
+                    fixup_node->right = NULL;
+                    node_to_delete->left = fixup_node;
+                    free_mem_flag = 1;
+                }
+                transplant(&root, node_to_delete, node_to_delete->left);
             }
             else {
-                /* Replace with successor approach */
-                // node_to_delete = min_value_node(root->right);
-                // root->val = node_to_delete->val;
-                // root->right = red_black_tree__delete(root->right, root->val);
 
-                /* Replace with predecessor approach */
-                node_to_delete = max_value_node(root->left);
-                root->val = node_to_delete->val;
-                root->left = red_black_tree__delete(root->left, root->val);
+                rb_node_s *predecessor = max_value_node(node_to_delete->left);
+                
+                original_color = predecessor->color;
+                fixup_node = predecessor->left;
+                if (!fixup_node) {
+                    fixup_node = malloc(sizeof(rb_node_s));
+                    fixup_node->color = BLACK;
+                    fixup_node->parent = predecessor;
+                    fixup_node->left = NULL;
+                    fixup_node->right = NULL;
+                    predecessor->left = fixup_node;
+                    free_mem_flag = 1;
+                }
+
+                if (predecessor->parent != node_to_delete) {
+                    transplant(&root, predecessor, predecessor->left);
+                    predecessor->left = node_to_delete->left;
+                    predecessor->left->parent = predecessor;
+                }
+
+                transplant(&root, node_to_delete, predecessor);
+                predecessor->right = node_to_delete->right;
+                if (predecessor->right)
+                    predecessor->right->parent = predecessor;
+                predecessor->color = node_to_delete->color;
+            }
+
+            free(node_to_delete);
+
+            if (original_color == BLACK)
+                delete_fixup(&root, fixup_node);
+
+            if (free_mem_flag) {
+                
+                if (!fixup_node->parent)
+                    root = NULL;
+                else if (fixup_node->parent->left == fixup_node)
+                    fixup_node->parent->left = NULL;
+                else
+                    fixup_node->parent->right = NULL;
+                
+                free(fixup_node);
             }
         }
     }
-
+    
     return root;
 }
 
-rb_node_t *red_black_tree__find(rb_node_t *root, const int val) {
+rb_node_s *red_black_tree__find(rb_node_s *root, const int val) {
 
     if (root && root->val != val) {
 
@@ -315,7 +431,7 @@ rb_node_t *red_black_tree__find(rb_node_t *root, const int val) {
     return root;
 }
 
-void red_black_tree__print(const rb_node_t *root) {
+void red_black_tree__print(const rb_node_s *root) {
 
     static int depth;
 

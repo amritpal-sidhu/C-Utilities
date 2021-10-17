@@ -19,7 +19,7 @@ int main(void) {
             root = binary_tree__insert(root, value);
             printf("\n");
             binary_tree__print(root);
-            printf("\n\n");
+            printf("\n");
         }
         else if (cmd == 'd') {
             scanf("%i", &value);
