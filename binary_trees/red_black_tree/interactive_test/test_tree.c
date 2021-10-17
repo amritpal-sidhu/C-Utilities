@@ -16,14 +16,14 @@ int main(void) {
 
         if (cmd == 'i') {
             scanf("%i", &value);
-            root = red_black_tree__insert(root, value);
+            red_black_tree__insert(&root, value);
             printf("\n");
             red_black_tree__print(root);
             printf("\n");
         }
         else if (cmd == 'd') {
             scanf("%i", &value);
-            root = red_black_tree__delete(root, value);
+            red_black_tree__delete(&root, value);
             printf("\n");
             red_black_tree__print(root);
             printf("\n");

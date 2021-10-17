@@ -19,18 +19,20 @@ typedef struct rb_node_s {
 } rb_node_s;
 
 /**
- * @param  root: pointer to root of the tree
+ * @param  root: reference pointer to the root of the tree
  * @param  val: value to delete from the tree
- * @retval Pointer to the root of the tree
+ * @retval Integral value indicating success or failure,
+ *         1 and 0 respectively
  */
-rb_node_s *red_black_tree__insert(rb_node_s *root, const int val);
+int red_black_tree__insert(rb_node_s **root, const int val);
 
 /**
- * @param  root: pointer to root of the tree
+ * @param  root: reference pointer to the root of the tree
  * @param  val: value to delete from the tree
- * @retval Pointer to the root of the tree
+ * @retval Integral value indicating success or failure,
+ *         1 and 0 respectively
  */
-rb_node_s *red_black_tree__delete(rb_node_s *root, const int val);
+int red_black_tree__delete(rb_node_s **root, const int val);
 
 /**
  * @param  root: pointer to root of the tree
