@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "binary_search_tree.h"
+#include "avl_tree.h"
 
 
 int main(void) {
 
-    binary_node_t *root = NULL;
+    avl_node_s *root = NULL;
     char cmd;
     int value;
 
@@ -16,16 +16,16 @@ int main(void) {
 
         if (cmd == 'i') {
             scanf("%i", &value);
-            root = binary_search_tree__insert(root, value);
+            avl_tree__insert(&root, value);
             printf("\n");
-            binary_search_tree__print(root);
+            avl_tree__print(root);
             printf("\n");
         }
         else if (cmd == 'd') {
             scanf("%i", &value);
-            root = binary_search_tree__delete(root, value);
+            avl_tree__delete(&root, value);
             printf("\n");
-            binary_search_tree__print(root);
+            avl_tree__print(root);
             printf("\n");
         }
 

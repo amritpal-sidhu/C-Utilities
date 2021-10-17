@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "binary_tree.h"
+#include "binary_search_tree.h"
 
 
 /**
@@ -24,7 +24,7 @@ static binary_node_t *max_value_node(binary_node_t *root) {
 /**
  * Public function definitions
  */
-binary_node_t *binary_tree__insert(binary_node_t *root, const int val) {
+binary_node_t *binary_search_tree__insert(binary_node_t *root, const int val) {
 
     binary_node_t *new_node = malloc(sizeof(binary_node_t));
     binary_node_t *cur, *parent;
@@ -59,15 +59,15 @@ binary_node_t *binary_tree__insert(binary_node_t *root, const int val) {
     return root;
 }
 
-binary_node_t *binary_tree__delete(binary_node_t *root, const int val) {
+binary_node_t *binary_search_tree__delete(binary_node_t *root, const int val) {
 
     if (root) {
 
         if (val < root->val)
-            root->left = binary_tree__delete(root->left, val);
+            root->left = binary_search_tree__delete(root->left, val);
 
         else if (val > root->val)
-            root->right = binary_tree__delete(root->right, val);
+            root->right = binary_search_tree__delete(root->right, val);
 
         else {
 
@@ -89,12 +89,12 @@ binary_node_t *binary_tree__delete(binary_node_t *root, const int val) {
                 /* Replace with successor approach */
                 // node_to_delete = min_value_node(root->right);
                 // root->val = node_to_delete->val;
-                // root->right = binary_tree__delete(root->right, root->val);
+                // root->right = binary_search_tree__delete(root->right, root->val);
 
                 /* Replace with predecessor approach */
                 node_to_delete = max_value_node(root->left);
                 root->val = node_to_delete->val;
-                root->left = binary_tree__delete(root->left, root->val);
+                root->left = binary_search_tree__delete(root->left, root->val);
             }
         }
     }
@@ -102,20 +102,20 @@ binary_node_t *binary_tree__delete(binary_node_t *root, const int val) {
     return root;
 }
 
-binary_node_t *binary_tree__find(binary_node_t *root, const int val) {
+binary_node_t *binary_search_tree__find(binary_node_t *root, const int val) {
 
     if (root && root->val != val) {
 
         if (val < root->val)
-            root = binary_tree__find(root->left, val);
+            root = binary_search_tree__find(root->left, val);
         else
-            root = binary_tree__find(root->right, val);
+            root = binary_search_tree__find(root->right, val);
     }
 
     return root;
 }
 
-void binary_tree__print(const binary_node_t *root) {
+void binary_search_tree__print(const binary_node_t *root) {
 
     static int depth;
 
@@ -123,12 +123,12 @@ void binary_tree__print(const binary_node_t *root) {
 
         ++depth;
 
-        binary_tree__print(root->right);
+        binary_search_tree__print(root->right);
 
         for (int i = 1; i < depth; ++i) printf("\t");
         printf("%i\n", root->val);
 
-        binary_tree__print(root->left);
+        binary_search_tree__print(root->left);
 
         --depth;
     }

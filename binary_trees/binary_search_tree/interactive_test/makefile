@@ -4,11 +4,11 @@ LDFLAGS =
 
 INC_DIR=../
 
-test_tree: test_tree.o $(INC_DIR)/binary_tree.o
+test_tree: test_tree.o $(INC_DIR)/binary_search_tree.o
 	make -C $(INC_DIR) -f makefile
-	$(CXX) -I$(INC_DIR) test_tree.o $(INC_DIR)binary_tree.o -o test_tree $(LDFLAGS)
+	$(CXX) -I$(INC_DIR) test_tree.o $(INC_DIR)binary_search_tree.o -o test_tree $(LDFLAGS)
 
-test_tree.o: test_tree.c $(INC_DIR)binary_tree.h
+test_tree.o: test_tree.c $(INC_DIR)binary_search_tree.h
 	$(CXX) $(CXXFLAGS) -I$(INC_DIR) test_tree.c
 
 clean:
