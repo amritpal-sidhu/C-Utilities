@@ -1,0 +1,40 @@
+import os
+
+UNITY_DIR = "../../site_scons/site_tools/throwtheswitch/unity"
+
+GENERATE_TEST_RUNNER = os.path.abspath(UNITY_DIR)+"/auto/generate_test_runner.rb"
+
+TEST_PATH = "unit_tests"
+
+DEF = "-DUNITY_INCLUDE_CONFIG_H"
+
+def INC(tree):
+    return "-Iinc -I{u}/src -I{u}".format(tree, u=UNITY_DIR)
+
+def SRC(tree):
+    return "{u}/src/unity.c unit_tests/test_{t}.c unit_tests/test_runners/test_{t}.c".format(u=os.path.abspath(UNITY_DIR), t=tree)
+
+def OBJ(tree):
+    return "{t}/{t}.o".format(t=tree)
+
+tree_name_list = [tree[:len(tree)-2] for tree in os.listdir("inc")]
+
+
+# env = Environment(
+#     CC="gcc",
+#     CCFLAGS=["-Wall"],
+#     CFlags=["-std=c99"]
+#     )
+
+for tree in tree_name_list:
+
+    l = Command(
+        source = TEST_PATH+"/test_{}.c".format(tree), 
+        target = TEST_PATH+"/test_runners/test_{}.c".format(tree),
+        action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER),
+        ENV={"PATH":"/usr/bin/"}
+    )
+
+    # env.MergeFlags(env.ParseFlags( INC(tree)+" "+DEF ))
+    # env.Program(target="./run_{}".format(tree), source=env.Object(source="{t}/src/{t}.c".format(t=tree)))
+

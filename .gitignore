@@ -36,20 +36,6 @@
 *.x86_64
 *.hex
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# Test Runner files
-/unit_tests/tree_tests/src/test_runners/*
+_build
+**/test_runners
+.sconsign.dblite
