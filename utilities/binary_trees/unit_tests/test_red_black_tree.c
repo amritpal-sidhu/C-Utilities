@@ -9,7 +9,7 @@
 
 #define STR_BUF_SIZE    256
 
-static const char *file_dir = "test_data/red_black_tree";
+static const char *file_dir = "utilities/binary_trees/unit_tests/test_data/red_black_tree";
 static const char *input_filename = "input1.txt";
 static const char *output_filename = "output1.txt";
 

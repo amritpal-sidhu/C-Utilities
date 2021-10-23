@@ -1,34 +1,35 @@
 import os
 
-UNITY_PATH = os.path.abspath("../../site_scons/site_tools/throwtheswitch/unity")
+
+
+UNITY_PATH = Dir(os.path.abspath("../../site_scons/site_tools/throwtheswitch/unity"))
 GENERATE_TEST_RUNNER = "{}/auto/generate_test_runner.rb".format(UNITY_PATH)
 
-TEST_PATH = "unit_tests"
+SOURCE_TEST_DIR = Dir(os.path.abspath("unit_tests"))
 
-def SRC(tree):
-    return "{u}/src/unity.c unit_tests/test_{t}.c unit_tests/test_runners/test_{t}.c".format(u=UNITY_PATH, t=tree)
+BUILD_OBJ_DIR = Dir(os.path.abspath("build/obj"))
+BUILD_TEST_DIR = Dir(os.path.abspath("build/test"))
 
-def OBJ(tree):
-    return "{t}/{t}.o".format(t=tree)
 
-tree_name_list = [tree[:len(tree)-2] for tree in os.listdir("inc")]
-
-env = Environment()
-env.Append(CPPPATH=["inc", "{}".format(UNITY_PATH), "{}/src".format(UNITY_PATH)])
+env = Environment(ENV=os.environ)
+env.Append(CPPPATH=["inc", "unit_tests", "{}".format(UNITY_PATH), "{}/src".format(UNITY_PATH)])
 env.Append(CPPDEFINES="UNITY_INCLUDE_CONFIG_H")
 
 
-for tree in tree_name_list:
+for include_file in os.listdir("inc"):
+
+    module_name, _ = os.path.splitext(include_file)
 
     env.Command(
-        source = TEST_PATH+"/test_{}.c".format(tree), 
-        target = TEST_PATH+"/test_runners/test_{}.c".format(tree),
+        source = "{}/test_{}.c".format(SOURCE_TEST_DIR, module_name), 
+        target = "{}/test_{}_runner.c".format(BUILD_TEST_DIR, module_name),
         action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER),
     )
 
-    l = [env.Object("build/unity.o", "{}/src/unity.c".format(UNITY_PATH)),
-        env.Object("build/{}.o".format(tree), "src/{}.c".format(tree)),
-        env.Object("build/test_{}.o".format(tree), "unit_tests/test_runners/test_{}.c".format(tree))]
-    p = env.Program(target="build/test_{}".format(tree), source=l)
-    print(p)
+    build_objects = [env.Object("{}/unity.o".format(BUILD_OBJ_DIR), "{}/src/unity.c".format(UNITY_PATH)),
+                    env.Object("{}/test_{}_runner.o".format(BUILD_OBJ_DIR, module_name), "{}/test_{}_runner.c".format(BUILD_TEST_DIR, module_name)),
+                    env.Object("{}/test_{}.o".format(BUILD_OBJ_DIR, module_name), "{}/test_{}.c".format(SOURCE_TEST_DIR, module_name)),
+                    env.Object("{}/{}.o".format(BUILD_OBJ_DIR, module_name), "src/{}.c".format(module_name))]
 
+    test_file = env.Program(target="{}/test_{}.out".format(BUILD_TEST_DIR, module_name), source=build_objects)
+    env.Command(target=None, source=test_file, action="./$SOURCE")

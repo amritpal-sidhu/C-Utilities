@@ -36,6 +36,7 @@
 *.x86_64
 *.hex
 
-_build
-**/test_runners
+**/build
+**/*.pyc
+**/.DS_Store
 .sconsign.dblite
