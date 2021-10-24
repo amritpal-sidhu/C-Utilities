@@ -1,35 +1,8 @@
 import os
 
+include_files = []
 
+for file in os.listdir("inc"):
+    include_files.append(os.path.splitext(file)[0])
 
-UNITY_PATH = Dir(os.path.abspath("../../site_scons/site_tools/throwtheswitch/unity"))
-GENERATE_TEST_RUNNER = "{}/auto/generate_test_runner.rb".format(UNITY_PATH)
-
-SOURCE_TEST_DIR = Dir(os.path.abspath("unit_tests"))
-
-BUILD_OBJ_DIR = Dir(os.path.abspath("build/obj"))
-BUILD_TEST_DIR = Dir(os.path.abspath("build/test"))
-
-
-env = Environment(ENV=os.environ)
-env.Append(CPPPATH=["inc", "unit_tests", "{}".format(UNITY_PATH), "{}/src".format(UNITY_PATH)])
-env.Append(CPPDEFINES="UNITY_INCLUDE_CONFIG_H")
-
-
-for include_file in os.listdir("inc"):
-
-    module_name, _ = os.path.splitext(include_file)
-
-    env.Command(
-        source = "{}/test_{}.c".format(SOURCE_TEST_DIR, module_name), 
-        target = "{}/test_{}_runner.c".format(BUILD_TEST_DIR, module_name),
-        action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER),
-    )
-
-    build_objects = [env.Object("{}/unity.o".format(BUILD_OBJ_DIR), "{}/src/unity.c".format(UNITY_PATH)),
-                    env.Object("{}/test_{}_runner.o".format(BUILD_OBJ_DIR, module_name), "{}/test_{}_runner.c".format(BUILD_TEST_DIR, module_name)),
-                    env.Object("{}/test_{}.o".format(BUILD_OBJ_DIR, module_name), "{}/test_{}.c".format(SOURCE_TEST_DIR, module_name)),
-                    env.Object("{}/{}.o".format(BUILD_OBJ_DIR, module_name), "src/{}.c".format(module_name))]
-
-    test_file = env.Program(target="{}/test_{}.out".format(BUILD_TEST_DIR, module_name), source=build_objects)
-    env.Command(target=None, source=test_file, action="./$SOURCE")
+Return("include_files")
