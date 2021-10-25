@@ -3,10 +3,10 @@ import sys
 import subprocess
 
 
-ROOT_DIR = Dir(os.path.abspath("../"))
-THIS_PATH = os.path.abspath(".")
+ROOT_DIR = os.path.abspath("../")
+BUILD_DIR = "{}/_build".format(ROOT_DIR)
 
-UNITY_DIR = Dir(os.path.abspath("../site_scons/site_tools/throwtheswitch/unity"))
+UNITY_DIR = os.path.abspath("../site_scons/site_tools/throwtheswitch/unity")
 GENERATE_TEST_RUNNER = "{}/auto/generate_test_runner.rb".format(UNITY_DIR)
 
 
@@ -19,34 +19,40 @@ env = Environment(
     LINKCOMSTR="Linking $TARGET"
 )
 
-Import("include_files_dict")
+Import("source_and_dependency_dict")
 
-unity_obj = env.Object("{}/_build/obj/unity.o".format(ROOT_DIR), "{}/src/unity.c".format(UNITY_DIR))
+unity_obj = env.Object("{}/obj/unity.o".format(BUILD_DIR), "{}/src/unity.c".format(UNITY_DIR))
 
-for dir, include_files in include_files_dict.items():
+for util, source_and_dependencies in source_and_dependency_dict.items():
 
-    module_dir = Dir(os.path.abspath(os.path.join(THIS_PATH,dir)))
-    env.Append(CPPPATH=["{}/inc".format(module_dir), "{}/unit_tests".format(module_dir)])
+    for include_path in source_and_dependencies["include_paths"]:
+        env.Append(CPPPATH=[include_path])
 
-    for include_file in include_files:
+    for source_name, source_paths in source_and_dependencies["sources"].items():
 
-        module_name, _ = os.path.splitext(include_file)
+        module_objs = []
 
-        module_build_dir = Dir("{}/_build/{}/{}".format(ROOT_DIR, dir, module_name))
+        if source_paths["source_path"]:
+            module_objs += env.Object(target="{b}/{u}/obj/{s}.o".format(b=BUILD_DIR, u=util, s=source_name),
+                                        source=source_paths["source_path"])
 
-        env.Command(
-            source = "{}/unit_tests/test_{}.c".format(module_dir, module_name), 
-            target = "{}/tests/test_{}_runner.c".format(module_build_dir, module_name),
-            action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER),
-        )
+            if source_paths["test_path"]:
+                env.Command(
+                    source = source_paths["test_path"],
+                    target = "{b}/{u}/test/{s}/test_{s}_runner.c".format(b=BUILD_DIR, u=util, s=source_name),
+                    action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER),
+                )
 
-        module_objs = [env.Object("{}/tests/obj/test_{}_runner.o".format(module_build_dir, module_name), "{}/tests/test_{}_runner.c".format(module_build_dir, module_name)),
-                        env.Object("{}/tests/obj/test_{}.o".format(module_build_dir, module_name), "{}/unit_tests/test_{}.c".format(module_dir, module_name)),
-                        env.Object("{}/obj/{}.o".format(module_build_dir, module_name), "{}/src/{}.c".format(module_dir, module_name))]
+                module_objs += [
+                    env.Object(target="{b}/{u}/test/{s}/test_{s}_runner.o".format(b=BUILD_DIR, u=util, s=source_name),
+                                source="{b}/{u}/test/{s}/test_{s}_runner.c".format(b=BUILD_DIR, u=util, s=source_name)),
+                    env.Object(target="{b}/{u}/test/{s}/test_{s}.o".format(b=BUILD_DIR, u=util, s=source_name),
+                                source=source_paths["test_path"])
+                ]
 
-        test_file = env.Program(target="{}/tests/test_{}.out".format(module_build_dir, module_name), source=unity_obj+module_objs)
-        env.Command(target=None, source=test_file, action="./$SOURCE")
-        # env.Command(target="{}/results/test_{}.test".format(BUILD_TEST_DIR, module_name), source=test_file, action="./$SOURCE > $TARGET")
+                test_file = env.Program(target="{b}/{u}/test/{s}/test_{s}.out".format(b=BUILD_DIR, u=util, s=source_name), source=unity_obj+module_objs)
+                env.Command(target=None, source=test_file, action="./$SOURCE")
+                # env.Command(target="{}/results/test_{}.test".format(BUILD_TEST_DIR, module_name), source=test_file, action="./$SOURCE > $TARGET")
 
 # subprocess.run(
 #     [
