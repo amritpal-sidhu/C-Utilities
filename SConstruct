@@ -1,8 +1,6 @@
 import os
 
 
-SetOption("num_jobs", 6)
-
 UTILITIES_PATH = os.path.abspath("utilities")
 
 # Structure of the source_and_dependency_dict:
@@ -14,8 +12,8 @@ UTILITIES_PATH = os.path.abspath("utilities")
 #               {
 #                   source_file_0 :
 #                   {
-#                       source_path : source_abspath_str,
-#                       test_path : test_abspath_str
+#                       source_file_path : abspath of source file,
+#                       test_file_path : abspath of test file
 #                   }
 #                   ...
 #               }
@@ -32,8 +30,8 @@ def print_dict(util, dict):
     print("\tinclude_paths:", dict[util]["include_paths"])
     for source_name, source_paths in dict[util]["sources"].items():
         print("\tsource:", source_name)
-        print("\t\tsource_path:", source_paths["source_path"])
-        print("\t\ttest_path:", source_paths["test_path"])
+        print("\t\tsource_file_path:", source_paths["source_file_path"])
+        print("\t\ttest_file_path:", source_paths["test_file_path"])
 
 
 for util in os.listdir(UTILITIES_PATH):
