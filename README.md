@@ -1,2 +1,2 @@
 # C Utilities
-This repo holds various C implementations of different utility modules.  It is meant to provide helpful libraries for other projects as well as for learning/practice.
+This repo is for personal learning and practice.  The utilities created could be useful in a future embedded project, but for now I'm using this project to learn the SCons build tool and integration with ThrowTheSwitch's Unity testing framework.
