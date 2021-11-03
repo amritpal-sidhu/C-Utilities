@@ -3,39 +3,41 @@ import sys
 import subprocess
 
 
-ROOT_PATH = os.path.abspath("../")
-BUILD_PATH = "{}/_build".format(ROOT_PATH)
+ROOT_DIR = Dir(os.path.abspath("../"))
+BUILD_DIR = ROOT_DIR.Dir("_build", create=True)
 
-UNITY_PATH = os.path.abspath("../site_scons/site_tools/throwtheswitch/unity")
-GENERATE_TEST_RUNNER = "{}/auto/generate_test_runner.rb".format(UNITY_PATH)
+UNITY_DIR = ROOT_DIR.Dir("site_scons/site_tools/throwtheswitch/unity")
+GENERATE_TEST_RUNNER = UNITY_DIR.File("auto/generate_test_runner.rb")
 
 
 # helper functions
-def build_and_run_tests(env, module_build_path, source_name, source_paths):
+def build_and_run_tests(build_dir, files, env, source_name):
 
     module_objs = []
-    module_built_obj_filepath = "{b}/obj/{s}.o".format(b=module_build_path, s=source_name)
+    obj_dir = build_dir.Dir("obj", create=True)
+    test_dir = build_dir.Dir("test", create=True)
+    obj_filepath = "{path}/{s}.o".format(path=obj_dir.abspath, s=source_name)
 
-    if not os.path.isfile(module_built_obj_filepath):
-        env.Object(target=module_built_obj_filepath, source=source_paths["source_file_path"])
+    if not os.path.isfile(obj_filepath):
+        module_objs += env.Object(target=obj_filepath, source=files["source_file"].abspath)
+    else:
+        module_objs += [File("{}/{}.o".format(obj_dir.abspath, source_name))]
 
-    module_objs += [File(module_built_obj_filepath)]
+    Clean(module_objs, "{}/{}.o".format(obj_dir.abspath, source_name))
 
-    if source_paths["test_file_path"]:
+    if files["test_file"]:
         env.Command(
-            source = source_paths["test_file_path"],
-            target = "{b}/test/{s}/test_{s}_runner.c".format(b=module_build_path, s=source_name),
-            action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER),
+            source = files["test_file"].abspath,
+            target = "{path}/test_{s}_runner.c".format(path=test_dir.abspath, s=source_name),
+            action = "ruby {} $SOURCE $TARGET".format(GENERATE_TEST_RUNNER.abspath),
         )
 
-        module_objs += [
-            env.Object(target="{b}/test/{s}/test_{s}_runner.o".format(b=module_build_path, s=source_name),
-                        source="{b}/test/{s}/test_{s}_runner.c".format(b=module_build_path, s=source_name)),
-            env.Object(target="{b}/test/{s}/test_{s}.o".format(b=module_build_path, s=source_name),
-                        source=source_paths["test_file_path"])
-        ]
+        module_objs += env.Object(target="{path}/test_{s}_runner.o".format(path=test_dir.abspath, s=source_name),
+                                source="{path}/test_{s}_runner.c".format(path=test_dir.abspath, s=source_name))
+        module_objs += env.Object(target="{path}/test_{s}.o".format(path=test_dir.abspath, s=source_name),
+                                    source=files["test_file"].abspath)
 
-        test_file = env.Program(target="{b}/test/{s}/test_{s}.out".format(b=module_build_path, s=source_name), source=unity_obj+module_objs)
+        test_file = env.Program(target="{path}/test_{s}.out".format(path=test_dir.abspath, s=source_name), source=unity_obj+module_objs)
         env.Command(target=None, source=test_file, action="./$SOURCE")
 
     return module_objs
@@ -45,30 +47,27 @@ def build_and_run_tests(env, module_build_path, source_name, source_paths):
 env = Environment(
     ENV=os.environ,
     CPPDEFINES="UNITY_INCLUDE_CONFIG_H",
-    CPPPATH=[UNITY_PATH, "{}/src".format(UNITY_PATH)],
+    CPPPATH=[UNITY_DIR.abspath, UNITY_DIR.Dir("src").abspath],
     CCCOMSTR="Compiling static object $TARGET",
     LINKCOMSTR="Linking $TARGET"
 )
 
 Import("source_and_dependency_dict")
 
-unity_obj = env.Object("{}/obj/unity.o".format(BUILD_PATH), "{}/src/unity.c".format(UNITY_PATH))
-Clean(None, "{}/obj/*.o".format(BUILD_PATH))
+unity_obj = env.Object("{}/obj/unity.o".format(BUILD_DIR.abspath), "{}/src/unity.c".format(UNITY_DIR.abspath))
 
 
 # build and test process
 for util, source_and_dependencies in source_and_dependency_dict.items():
 
     env.Append(CPPPATH=source_and_dependencies["include_paths"])
-    module_build_path = "{b}/{u}".format(b=BUILD_PATH, u=util)
+    module_build_dir = BUILD_DIR.Dir(util, create=True)
 
-    for source_name, source_paths in source_and_dependencies["sources"].items():
+    for source_name, files in source_and_dependencies["sources"].items():
 
-        build_and_run_tests(env,module_build_path, source_name, source_paths)
-        Clean(source_name, ["{b}/obj/{s}.o".format(b=module_build_path, s=source_name),
-                            "{b}/test/{s}/test_{s}_runner.c".format(b=module_build_path, s=source_name),
-                            "{b}/test/{s}/test_{s}_runner.o".format(b=module_build_path, s=source_name),
-                            "{b}/test/{s}/test_{s}.o".format(b=module_build_path, s=source_name),
-                            "{b}/test/{s}/test_{s}.out".format(b=module_build_path, s=source_name)])
+        submodule_build_dir = module_build_dir.Dir(source_name, create=True)
+
+        build_and_run_tests(submodule_build_dir, files, env, source_name)
+
 
         # Building for embedded platform (cross compiling) could happen here

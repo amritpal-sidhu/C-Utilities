@@ -7,25 +7,30 @@ source_and_dependencies = {
 }
 
 
-for dir, _, files in os.walk("."):
+for dirpath, _, filenames in os.walk("."):
 
-    for file in files:
+    for filename in filenames:
 
-        filename, suffix = os.path.splitext(file)
+        dir = Dir(os.path.abspath(dirpath))
+        file = File(filename, dir)
 
-        if suffix == ".h":
-            inc_dir_abspath = os.path.abspath(dir)
-            if inc_dir_abspath not in source_and_dependencies["include_paths"]:
-                source_and_dependencies["include_paths"].append(inc_dir_abspath)
-        elif suffix == ".c":
-            if filename[:5] == "test_":
-                if filename[5:] not in source_and_dependencies["sources"]:
-                    source_and_dependencies["sources"][filename[5:]] = {"source_file_path" : None, "test_file_path" : None}
-                source_and_dependencies["sources"][filename[5:]]["test_file_path"] = os.path.abspath(os.path.join(dir, file))
+        if file.suffix == ".h":
+        
+            if dir.abspath not in source_and_dependencies["include_paths"]:
+                source_and_dependencies["include_paths"].append(dir.abspath)
+        
+        elif file.suffix == ".c":
+        
+            basename = file.name.replace(file.suffix, "")
+
+            if basename[:5] == "test_":
+                if basename[5:] not in source_and_dependencies["sources"]:
+                    source_and_dependencies["sources"][basename[5:]] = {"source_file" : None, "test_file" : None}
+                source_and_dependencies["sources"][basename[5:]]["test_file"] = file
             else:
-                if filename not in source_and_dependencies["sources"]:
-                    source_and_dependencies["sources"][filename] = {"source_file_path" : None, "test_file_path" : None}
-                source_and_dependencies["sources"][filename]["source_file_path"] = os.path.abspath(os.path.join(dir, file))
+                if basename not in source_and_dependencies["sources"]:
+                    source_and_dependencies["sources"][basename] = {"source_file" : None, "test_file" : None}
+                source_and_dependencies["sources"][basename]["source_file"] = file
 
 
 Return("source_and_dependencies")
