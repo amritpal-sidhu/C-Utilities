@@ -30,8 +30,8 @@ def print_dict(util, dict):
     print("\tinclude_paths:", dict[util]["include_paths"])
     for source_name, source_paths in dict[util]["sources"].items():
         print("\tsource:", source_name)
-        print("\t\tsource_file_path:", source_paths["source_file_path"].abspath)
-        print("\t\ttest_file_path:", source_paths["test_file_path"].abspath)
+        print("\t\tsource_file:", source_paths["source_file"].abspath)
+        print("\t\ttest_file:", source_paths["test_file"].abspath)
 
 
 for util_DirEntry in os.scandir(UTILITIES_DIR.abspath):
