@@ -1,5 +1,5 @@
 
-add_library(unity STATIC src/unity.c)
+add_library(unity SHARED src/unity.c)
 target_include_directories(unity 
                             PUBLIC .
                             PUBLIC src)
