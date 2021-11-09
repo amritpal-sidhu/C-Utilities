@@ -1,5 +1,4 @@
 
-add_library(unity SHARED src/unity.c)
-target_include_directories(unity 
-                            PUBLIC .
-                            PUBLIC src)
+add_definitions(-DUNITY_INCLUDE_CONFIG_H)
+include_directories(. src)
+add_library(unity OBJECT src/unity.c)

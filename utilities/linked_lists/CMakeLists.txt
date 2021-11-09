@@ -1,6 +1,6 @@
 
 set(UNITY_DIR ${CMAKE_SOURCE_DIR}/throwtheswitch/unity)
-set(TEST_RUNNER_DIR ${CMAKE_BINARY_DIR}/utilities/binary_trees/CMakeFiles)
+set(TEST_RUNNER_DIR ${CMAKE_BINARY_DIR}/utilities/linked_lists/CMakeFiles)
 
 file(GLOB SOURCES src/*.c)
 file(GLOB GENERATE_TEST_RUNNER ${UNITY_DIR}/auto/generate_test_runner.rb)
