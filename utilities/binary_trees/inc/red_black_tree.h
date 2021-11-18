@@ -35,6 +35,20 @@ int red_black_tree__insert(rb_node_s **root, const int val);
 int red_black_tree__delete(rb_node_s **root, const int val);
 
 /**
+ * @param  node: The relative node for which a max value will
+ *               be searched for.
+ * @return Pointer to max value node relative to argument
+ */
+rb_node_s *min_value_node(rb_node_s *node);
+
+/**
+ * @param  node: The relative node for which a max value will
+ *               be searched for.
+ * @return Pointer to max value node relative to argument
+ */
+rb_node_s *max_value_node(rb_node_s *node);
+
+/**
  * @param  root: pointer to root of the tree
  * @param  val: Value of data at tree node
  * @retval Pointer to node with first matching value, or NULL

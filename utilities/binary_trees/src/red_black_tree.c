@@ -18,34 +18,6 @@
  */
 
 /**
- * Return a pointer to the minimum valued node from the
- * provided node.
- * 
- * @param  node: pointer to starting node
- * @retval Pointer to the minimum valued node
- */
-static rb_node_s *min_value_node(rb_node_s *node) {
-
-    if (node) while (node->left) node = node->left;
-
-    return node;
-}
-
-/**
- * Return a pointer to the maximum valued node from the
- * provided node.
- * 
- * @param  node: pointer to starting node
- * @retval Pointer to the maximum valued node
- */
-static rb_node_s *max_value_node(rb_node_s *node) {
-
-    if (node) while (node->right) node = node->right;
-
-    return node;
-}
-
-/**
  * @param  root: reference pointer to the root of the tree
  * @param  pivot: pointer to the starting pivot node
  * @retval Pointer to the ending pivot node
@@ -426,6 +398,20 @@ int red_black_tree__delete(rb_node_s **root, const int val) {
     }
     
     return success;
+}
+
+rb_node_s *min_value_node(rb_node_s *node) {
+
+    if (node) while (node->left) node = node->left;
+
+    return node;
+}
+
+rb_node_s *max_value_node(rb_node_s *node) {
+
+    if (node) while (node->right) node = node->right;
+
+    return node;
 }
 
 rb_node_s *red_black_tree__find(rb_node_s *root, const int val) {

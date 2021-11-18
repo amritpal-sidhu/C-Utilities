@@ -5,23 +5,6 @@
 
 
 /**
- * Private helper functions
- */
-static binary_node_t *min_value_node(binary_node_t *root) {
-
-    if (root) while (root->left) root = root->left;
-
-    return root;
-}
-
-static binary_node_t *max_value_node(binary_node_t *root) {
-
-    if (root) while (root->right) root = root->right;
-
-    return root;
-}
-
-/**
  * Public function definitions
  */
 binary_node_t *binary_search_tree__insert(binary_node_t *root, const int val) {
@@ -100,6 +83,20 @@ binary_node_t *binary_search_tree__delete(binary_node_t *root, const int val) {
     }
 
     return root;
+}
+
+binary_node_t *min_value_node(binary_node_t *node) {
+
+    if (node) while (node->left) node = node->left;
+
+    return node;
+}
+
+binary_node_t *max_value_node(binary_node_t *node) {
+
+    if (node) while (node->right) node = node->right;
+
+    return node;
 }
 
 binary_node_t *binary_search_tree__find(binary_node_t *root, const int val) {

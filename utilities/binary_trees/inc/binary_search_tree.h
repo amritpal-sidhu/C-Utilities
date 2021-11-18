@@ -27,6 +27,20 @@ binary_node_t *binary_search_tree__insert(binary_node_t *root, const int val);
 binary_node_t *binary_search_tree__delete(binary_node_t *root, const int val);
 
 /**
+ * @param  node: The relative node for which a min value will
+ *               be searched for.
+ * @return Pointer to min value node relative to argument
+ */
+binary_node_t *min_value_node(binary_node_t *node);
+
+/**
+ * @param  node: The relative node for which a max value will
+ *               be searched for.
+ * @return Pointer to max value node relative to argument
+ */
+binary_node_t *max_value_node(binary_node_t *node);
+
+/**
  * @param  root: pointer to root of the tree
  * @param  val: Value of data at tree node
  * @retval Pointer to node with first matching value, or NULL
