@@ -7,10 +7,11 @@
 /**
  * Public function definitions
  */
-binary_node_t *binary_search_tree__insert(binary_node_t *root, const int val) {
+bst_node_s *binary_search_tree__insert(bst_node_s *root, const int val)
+{
 
-    binary_node_t *new_node = malloc(sizeof(binary_node_t));
-    binary_node_t *cur, *parent;
+    bst_node_s *new_node = malloc(sizeof(bst_node_s));
+    bst_node_s *cur, *parent;
 
     new_node->val = val;
     new_node->left = NULL;
@@ -18,8 +19,8 @@ binary_node_t *binary_search_tree__insert(binary_node_t *root, const int val) {
 
     if (!root) {
         root = new_node;
-    }
-    else {
+    
+    } else {
 
         cur = root;
 
@@ -42,7 +43,8 @@ binary_node_t *binary_search_tree__insert(binary_node_t *root, const int val) {
     return root;
 }
 
-binary_node_t *binary_search_tree__delete(binary_node_t *root, const int val) {
+bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val)
+{
 
     if (root) {
 
@@ -54,21 +56,21 @@ binary_node_t *binary_search_tree__delete(binary_node_t *root, const int val) {
 
         else {
 
-            binary_node_t *node_to_delete = root;
+            bst_node_s *node_to_delete = root;
 
             if ( !node_to_delete->left && !node_to_delete->right ) {
                 root = NULL;
                 free(node_to_delete);
-            }
-            else if ( !node_to_delete->left ) {
+            
+            } else if ( !node_to_delete->left ) {
                 root = node_to_delete->right;
                 free(node_to_delete);
-            }
-            else if ( !node_to_delete->right ) {
+            
+            } else if ( !node_to_delete->right ) {
                 root = node_to_delete->left;
                 free(node_to_delete);
-            }
-            else {
+            
+            } else {
                 /* Replace with successor approach */
                 // node_to_delete = min_value_node(root->right);
                 // root->val = node_to_delete->val;
@@ -85,21 +87,24 @@ binary_node_t *binary_search_tree__delete(binary_node_t *root, const int val) {
     return root;
 }
 
-binary_node_t *min_value_node(binary_node_t *node) {
+bst_node_s *min_value_node(bst_node_s *node)
+{
 
     if (node) while (node->left) node = node->left;
 
     return node;
 }
 
-binary_node_t *max_value_node(binary_node_t *node) {
+bst_node_s *max_value_node(bst_node_s *node)
+{
 
     if (node) while (node->right) node = node->right;
 
     return node;
 }
 
-binary_node_t *binary_search_tree__find(binary_node_t *root, const int val) {
+bst_node_s *binary_search_tree__find(bst_node_s *root, const int val)
+{
 
     if (root && root->val != val) {
 
@@ -112,7 +117,8 @@ binary_node_t *binary_search_tree__find(binary_node_t *root, const int val) {
     return root;
 }
 
-void binary_search_tree__print(const binary_node_t *root) {
+void binary_search_tree__print(const bst_node_s *root)
+{
 
     static int depth;
 

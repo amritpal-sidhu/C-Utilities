@@ -20,14 +20,17 @@ The files containing test data for binary trees are oganized in the following wa
         This string can be thought as the state of the tree to validate operations are
         performed correctly.
 
-        Example for the above sequence with a binary search tree:
+        Example syntax for the above sequence with a binary search tree:
             10
             5 10
             5 10 15
             10 15
 
-        For the red black tree, expected node color should be provided in the following way:
-            <value>:<expected color>
+        For the red black tree, expected node syntax should be provided in the following way:
+            <value>:<color>
+
+        For the avl tree, expected node syntax should be provided in the following way:
+            <value>:<height>
         
 Caveats:
 
