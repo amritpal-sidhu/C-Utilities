@@ -12,24 +12,31 @@ typedef struct avl_node_s {
 
 
 /**
- * @param  root: reference pointer to the root of the tree
+ * @param  root: pointer to root of the tree
  * @param  val: value to delete from the tree
- * @retval Integral value indicating success or failure,
- *         1 and 0 respectively
+ * @retval Pointer to the root of the tree
  */
 avl_node_s *avl_tree__insert(avl_node_s *root, const int val);
 
 /**
- * @param  root: reference pointer to the root of the tree
+ * @param  root: pointer to root of tree
  * @param  val: value to delete from the tree
- * @retval Integral value indicating success or failure,
- *         1 and 0 respectively
+ * @retval Pointer to the root of the tree
  */
 avl_node_s *avl_tree__delete(avl_node_s *root, const int val);
 
-
+/**
+ * @param  node: The relative node for which a min value will
+ *               be searched for.
+ * @return Pointer to min value node relative to argument
+ */
 avl_node_s *min_value_node(avl_node_s *node);
 
+/**
+ * @param  node: The relative node for which a max value will
+ *               be searched for.
+ * @return Pointer to max value node relative to argument
+ */
 avl_node_s *max_value_node(avl_node_s *node);
 
 /**

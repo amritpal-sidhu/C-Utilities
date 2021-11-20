@@ -138,15 +138,33 @@ avl_node_s *avl_tree__delete(avl_node_s *root, const int val)
                 free(node_to_delete);
             
             } else {
-                /* Replace with successor approach */
-                // node_to_delete = min_value_node(root->right);
-                // root->val = node_to_delete->val;
-                // root->right = avl_tree__delete(root->right, root->val);
-
                 /* Replace with predecessor approach */
                 node_to_delete = max_value_node(root->left);
                 root->val = node_to_delete->val;
                 root->left = avl_tree__delete(root->left, root->val);
+            }
+        }
+
+        if (root) {
+
+            root->height = max_height(root) + 1;
+            int bf = balance_factor(root);
+
+            if (bf > 1) {
+
+                if (balance_factor(root->left) < 0) {
+                    root->left = left_rotate(root->left);
+                    root = right_rotate(root);
+                } else
+                    root = right_rotate(root);
+
+            } else if (bf < -1) {
+
+                if (balance_factor(root->right) > 0) {
+                    root->right = right_rotate(root->right);
+                    root = left_rotate(root);
+                } else
+                    root = left_rotate(root);
             }
         }
     }
