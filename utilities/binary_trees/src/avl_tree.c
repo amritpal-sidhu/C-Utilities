@@ -139,7 +139,7 @@ avl_node_s *avl_tree__delete(avl_node_s *root, const int val)
             
             } else {
                 /* Replace with predecessor approach */
-                node_to_delete = max_value_node(root->left);
+                node_to_delete = avl_tree__max(root->left);
                 root->val = node_to_delete->val;
                 root->left = avl_tree__delete(root->left, root->val);
             }
@@ -172,14 +172,14 @@ avl_node_s *avl_tree__delete(avl_node_s *root, const int val)
     return root;
 }
 
-avl_node_s *min_value_node(avl_node_s *node)
+avl_node_s *avl_tree__min(avl_node_s *node)
 {
     if (node) while (node->left) node = node->left;
 
     return node;
 }
 
-avl_node_s *max_value_node(avl_node_s *node)
+avl_node_s *avl_tree__max(avl_node_s *node)
 {
     if (node) while (node->right) node = node->right;
 

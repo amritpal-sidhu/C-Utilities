@@ -77,7 +77,7 @@ bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val)
                 // root->right = binary_search_tree__delete(root->right, root->val);
 
                 /* Replace with predecessor approach */
-                node_to_delete = max_value_node(root->left);
+                node_to_delete = binary_search_tree__max(root->left);
                 root->val = node_to_delete->val;
                 root->left = binary_search_tree__delete(root->left, root->val);
             }
@@ -87,7 +87,7 @@ bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val)
     return root;
 }
 
-bst_node_s *min_value_node(bst_node_s *node)
+bst_node_s *binary_search_tree__min(bst_node_s *node)
 {
 
     if (node) while (node->left) node = node->left;
@@ -95,7 +95,7 @@ bst_node_s *min_value_node(bst_node_s *node)
     return node;
 }
 
-bst_node_s *max_value_node(bst_node_s *node)
+bst_node_s *binary_search_tree__max(bst_node_s *node)
 {
 
     if (node) while (node->right) node = node->right;
