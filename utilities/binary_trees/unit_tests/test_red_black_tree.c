@@ -113,8 +113,7 @@ static void inorder_str_write(rb_node_s *root) {
     if (root) {
         inorder_str_write(root->left);
 
-        sprintf(local_str_buf, "%i:%c", root->val, root->color == RED ? 'R' : 'B');
-        strcat(local_str_buf, " ");
+        sprintf(local_str_buf, "%i:%c ", root->val, root->color == RED ? 'R' : 'B');
         strcat(write_str_buf, local_str_buf);
 
         inorder_str_write(root->right);

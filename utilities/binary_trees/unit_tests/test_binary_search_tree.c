@@ -113,8 +113,7 @@ static void inorder_str_write(bst_node_s *root) {
     if (root) {
         inorder_str_write(root->left);
 
-        sprintf(local_str_buf, "%i", root->val);
-        strcat(local_str_buf, " ");
+        sprintf(local_str_buf, "%i ", root->val);
         strcat(write_str_buf, local_str_buf);
 
         inorder_str_write(root->right);
