@@ -13,18 +13,19 @@ static void print_queue(const queue_s *q);
 static void print_queue_reverse(const queue_s *q);
 
 
-void setUp(void) {
-
+void setUp(void)
+{
     srand(time(NULL));
 }
 
-void tearDown(void) {
+void tearDown(void)
+{
 
 }
 
 
-void test_empty_queue_init(void) {
-
+void test_empty_queue_init(void)
+{
     queue_s q;
     const unsigned int expected_size = 0;
 
@@ -35,8 +36,8 @@ void test_empty_queue_init(void) {
     TEST_ASSERT_EQUAL(expected_size, q.size);
 }
 
-void test_queue_init_with_value(void) {
-
+void test_queue_init_with_value(void)
+{
     queue_s q;
     const int expected_value = rand();
     const unsigned int expected_size = 1;
@@ -54,8 +55,8 @@ void test_queue_init_with_value(void) {
     TEST_ASSERT_EQUAL(expected_size-1, q.size);
 }
 
-void test_series_of_random_values_push_and_pop(void) {
-
+void test_series_of_random_values_push_and_pop(void)
+{
     queue_s q;
     const unsigned int number_of_values = 1024;
     int expected_values[number_of_values];
@@ -93,8 +94,8 @@ void test_series_of_random_values_push_and_pop(void) {
 /**
  * Private function definitions
  */
-static void print_queue(const queue_s *q) {
-
+static void print_queue(const queue_s *q)
+{
     doubly_linked_node_s *cur = q->front;
 
     while (cur) {
@@ -103,8 +104,8 @@ static void print_queue(const queue_s *q) {
     }
 }
 
-static void print_queue_reverse(const queue_s *q) {
-
+static void print_queue_reverse(const queue_s *q)
+{
     doubly_linked_node_s *cur = q->back;
 
     while (cur) {

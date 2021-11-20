@@ -34,27 +34,27 @@ static int balance_factor(avl_node_s *node)
     return bf;
 }
 
-static avl_node_s *left_rotate(avl_node_s *node)
+static avl_node_s *left_rotate(avl_node_s *pivot)
 {
-    avl_node_s *new_pivot = node->right;
+    avl_node_s *new_pivot = pivot->right;
 
-    node->right = new_pivot->left;
-    new_pivot->left = node;
+    pivot->right = new_pivot->left;
+    new_pivot->left = pivot;
 
-    node->height = max_height(node) + 1;
+    pivot->height = max_height(pivot) + 1;
     new_pivot->height = max_height(new_pivot) + 1;
 
     return new_pivot;
 }
 
-static avl_node_s *right_rotate(avl_node_s *node)
+static avl_node_s *right_rotate(avl_node_s *pivot)
 {
-    avl_node_s *new_pivot = node->left;
+    avl_node_s *new_pivot = pivot->left;
 
-    node->left = new_pivot->right;
-    new_pivot->right = node;
+    pivot->left = new_pivot->right;
+    new_pivot->right = pivot;
 
-    node->height = max_height(node) + 1;
+    pivot->height = max_height(pivot) + 1;
     new_pivot->height = max_height(new_pivot) + 1;
 
     return new_pivot;

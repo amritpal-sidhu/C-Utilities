@@ -26,18 +26,19 @@ static void inorder_str_write(bst_node_s *root);
 /**
  * Test functions
  */
-void setUp(void) {
-
+void setUp(void)
+{    
     memset(read_str_buf, 0, STR_BUF_SIZE);
     memset(write_str_buf, 0, STR_BUF_SIZE);
 }
 
-void tearDown(void) {
-
+void tearDown(void)
+{
+    
 }
 
-void test_tree_using_predetermined_data(void) {
-
+void test_tree_using_predetermined_data(void)
+{
     FILE *input_file = get_file_handle(input_filename);
     FILE *output_file = get_file_handle(output_filename);
     char cmd;
@@ -94,8 +95,8 @@ void test_tree_using_predetermined_data(void) {
 /**
  * Private function definitions
  */
-static FILE *get_file_handle(const char *filename) {
-    
+static FILE *get_file_handle(const char *filename)
+{    
     const unsigned file_dir_strlen = strlen(file_dir);
 
     memset(read_str_buf, 0, STR_BUF_SIZE);
@@ -106,8 +107,8 @@ static FILE *get_file_handle(const char *filename) {
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(bst_node_s *root) {
-
+static void inorder_str_write(bst_node_s *root)
+{
     char local_str_buf[STR_BUF_SIZE];
 
     if (root) {
