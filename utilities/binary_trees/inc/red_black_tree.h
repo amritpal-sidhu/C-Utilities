@@ -39,14 +39,14 @@ int red_black_tree__delete(rb_node_s **root, const int val);
  *               be searched for.
  * @return Pointer to max value node relative to argument
  */
-rb_node_s *min_value_node(rb_node_s *node);
+rb_node_s *red_black_tree__min(rb_node_s *node);
 
 /**
  * @param  node: The relative node for which a max value will
  *               be searched for.
  * @return Pointer to max value node relative to argument
  */
-rb_node_s *max_value_node(rb_node_s *node);
+rb_node_s *red_black_tree__max(rb_node_s *node);
 
 /**
  * @param  root: pointer to root of the tree

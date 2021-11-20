@@ -357,7 +357,7 @@ int red_black_tree__delete(rb_node_s **root, const int val)
             
             } else {
 
-                rb_node_s *predecessor = max_value_node(node_to_delete->left);
+                rb_node_s *predecessor = red_black_tree__max(node_to_delete->left);
                 
                 original_color = predecessor->color;
                 fixup_node = predecessor->left;
@@ -407,7 +407,7 @@ int red_black_tree__delete(rb_node_s **root, const int val)
     return success;
 }
 
-rb_node_s *min_value_node(rb_node_s *node)
+rb_node_s *red_black_tree__min(rb_node_s *node)
 {
 
     if (node) while (node->left) node = node->left;
@@ -415,7 +415,7 @@ rb_node_s *min_value_node(rb_node_s *node)
     return node;
 }
 
-rb_node_s *max_value_node(rb_node_s *node)
+rb_node_s *red_black_tree__max(rb_node_s *node)
 {
 
     if (node) while (node->right) node = node->right;

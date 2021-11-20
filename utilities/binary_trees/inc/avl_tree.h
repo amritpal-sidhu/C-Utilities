@@ -30,14 +30,14 @@ avl_node_s *avl_tree__delete(avl_node_s *root, const int val);
  *               be searched for.
  * @return Pointer to min value node relative to argument
  */
-avl_node_s *min_value_node(avl_node_s *node);
+avl_node_s *avl_tree__min(avl_node_s *node);
 
 /**
  * @param  node: The relative node for which a max value will
  *               be searched for.
  * @return Pointer to max value node relative to argument
  */
-avl_node_s *max_value_node(avl_node_s *node);
+avl_node_s *avl_tree__max(avl_node_s *node);
 
 /**
  * @param  root: pointer to root of the tree
