@@ -21,7 +21,7 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(binary_node_t *root);
+static void inorder_str_write(bst_node_s *root);
 
 /**
  * Test functions
@@ -43,7 +43,7 @@ void test_tree_using_predetermined_data(void) {
     char cmd;
     int value;
 
-    binary_node_t *root = NULL, *ptr = NULL;
+    bst_node_s *root = NULL, *ptr = NULL;
 
     if (input_file && output_file) {
 
@@ -106,7 +106,7 @@ static FILE *get_file_handle(const char *filename) {
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(binary_node_t *root) {
+static void inorder_str_write(bst_node_s *root) {
 
     char local_str_buf[STR_BUF_SIZE];
 
