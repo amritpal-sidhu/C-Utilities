@@ -4,15 +4,6 @@
 #include "red_black_tree.h"
 
 
-// static const rb_node_s nil = {
-
-//     .val = 0,
-//     .parent = NULL,
-//     .left = NULL,
-//     .right = NULL,
-//     .color = BLACK
-// };
-
 /**
  * Private helper functions
  */
@@ -24,25 +15,24 @@
  */
 static rb_node_s *left_rotate(rb_node_s **root, rb_node_s *pivot)
 {
+    rb_node_s *new_pivot = pivot->right;
 
-    rb_node_s *pivot_child = pivot->right;
-
-    pivot->right = pivot_child->left;
+    pivot->right = new_pivot->left;
     if (pivot->right) pivot->right->parent = pivot;
     
-    pivot_child->parent = pivot->parent;
+    new_pivot->parent = pivot->parent;
     
-    if (!pivot_child->parent)
-        *root = pivot_child;
-    else if (pivot_child->parent->left == pivot)
-        pivot_child->parent->left = pivot_child;
+    if (!new_pivot->parent)
+        *root = new_pivot;
+    else if (new_pivot->parent->left == pivot)
+        new_pivot->parent->left = new_pivot;
     else
-        pivot_child->parent->right = pivot_child;
+        new_pivot->parent->right = new_pivot;
 
-    pivot_child->left = pivot;
-    pivot->parent = pivot_child;
+    new_pivot->left = pivot;
+    pivot->parent = new_pivot;
 
-    return pivot_child;
+    return new_pivot;
 }
 
 /**
@@ -52,25 +42,24 @@ static rb_node_s *left_rotate(rb_node_s **root, rb_node_s *pivot)
  */
 static rb_node_s *right_rotate(rb_node_s **root, rb_node_s *pivot)
 {
+    rb_node_s *new_pivot = pivot->left;
 
-    rb_node_s *pivot_child = pivot->left;
-
-    pivot->left = pivot_child->right;
+    pivot->left = new_pivot->right;
     if (pivot->left) pivot->left->parent = pivot;
     
-    pivot_child->parent = pivot->parent;
+    new_pivot->parent = pivot->parent;
     
-    if (!pivot_child->parent)
-        *root = pivot_child;
-    else if (pivot_child->parent->left == pivot)
-        pivot_child->parent->left = pivot_child;
+    if (!new_pivot->parent)
+        *root = new_pivot;
+    else if (new_pivot->parent->left == pivot)
+        new_pivot->parent->left = new_pivot;
     else
-        pivot_child->parent->right = pivot_child;
+        new_pivot->parent->right = new_pivot;
 
-    pivot_child->right = pivot;
-    pivot->parent = pivot_child;
+    new_pivot->right = pivot;
+    pivot->parent = new_pivot;
 
-    return pivot_child;
+    return new_pivot;
 }
 
 /**
@@ -82,7 +71,6 @@ static rb_node_s *right_rotate(rb_node_s **root, rb_node_s *pivot)
  */
 static void insert_fixup(rb_node_s **root, rb_node_s *node)
 {
-
     while (node->parent && node->parent->color == RED) {
 
         rb_node_s *grandparent = node->parent->parent;
@@ -146,7 +134,6 @@ static void insert_fixup(rb_node_s **root, rb_node_s *node)
  */
 static void delete_fixup(rb_node_s **root, rb_node_s *node)
 {
-    
     while (node && node != *root && node->color == BLACK) {
 
         if (node->parent->left == node) {
@@ -237,7 +224,6 @@ static void delete_fixup(rb_node_s **root, rb_node_s *node)
  */
 static void transplant(rb_node_s **root, const rb_node_s *old_node, rb_node_s *new_node)
 {
-
     if (*root && old_node) {
 
         if (old_node->parent == NULL)
@@ -257,7 +243,6 @@ static void transplant(rb_node_s **root, const rb_node_s *old_node, rb_node_s *n
  */
 int red_black_tree__insert(rb_node_s **root, const int val)
 {
-
     int success = 1;
     rb_node_s *new_node = malloc(sizeof(rb_node_s));
     rb_node_s *cur, *parent;
@@ -306,7 +291,6 @@ int red_black_tree__insert(rb_node_s **root, const int val)
 
 int red_black_tree__delete(rb_node_s **root, const int val)
 {
-
     int success = 0;
 
     if (*root) {
@@ -409,7 +393,6 @@ int red_black_tree__delete(rb_node_s **root, const int val)
 
 rb_node_s *red_black_tree__min(rb_node_s *node)
 {
-
     if (node) while (node->left) node = node->left;
 
     return node;
@@ -417,7 +400,6 @@ rb_node_s *red_black_tree__min(rb_node_s *node)
 
 rb_node_s *red_black_tree__max(rb_node_s *node)
 {
-
     if (node) while (node->right) node = node->right;
 
     return node;
@@ -425,7 +407,6 @@ rb_node_s *red_black_tree__max(rb_node_s *node)
 
 rb_node_s *red_black_tree__find(rb_node_s *root, const int val)
 {
-
     if (root && root->val != val) {
 
         if (val < root->val)
@@ -439,7 +420,6 @@ rb_node_s *red_black_tree__find(rb_node_s *root, const int val)
 
 void red_black_tree__print(const rb_node_s *root)
 {
-
     static int depth;
 
     if (root) {

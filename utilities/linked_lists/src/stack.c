@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 
-int stack__init(stack_s *s, const int *val) {
-
+int stack__init(stack_s *s, const int *val)
+{
     singly_linked_node_s *new_node;
     int retval = 0;
 
@@ -27,8 +27,8 @@ int stack__init(stack_s *s, const int *val) {
     return retval;
 }
 
-int stack__push(stack_s *s, const int val) {
-
+int stack__push(stack_s *s, const int val)
+{
     singly_linked_node_s *new_node = malloc(sizeof(singly_linked_node_s));
     int retval = 0;
 
@@ -46,8 +46,8 @@ int stack__push(stack_s *s, const int val) {
 }
 
 
-int stack__pop(stack_s *s, int *val) {
-
+int stack__pop(stack_s *s, int *val)
+{
     singly_linked_node_s *old_node;
     int retval = 0;
 
@@ -65,8 +65,8 @@ int stack__pop(stack_s *s, int *val) {
     return retval;
 }
 
-void stack__clear(stack_s *s) {
-
+void stack__clear(stack_s *s)
+{
     if (s) {
 
         while (s->top)

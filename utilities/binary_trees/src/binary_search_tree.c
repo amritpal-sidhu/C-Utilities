@@ -9,7 +9,6 @@
  */
 bst_node_s *binary_search_tree__insert(bst_node_s *root, const int val)
 {
-
     bst_node_s *new_node = malloc(sizeof(bst_node_s));
     bst_node_s *cur, *parent;
 
@@ -45,7 +44,6 @@ bst_node_s *binary_search_tree__insert(bst_node_s *root, const int val)
 
 bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val)
 {
-
     if (root) {
 
         if (val < root->val)
@@ -89,7 +87,6 @@ bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val)
 
 bst_node_s *binary_search_tree__min(bst_node_s *node)
 {
-
     if (node) while (node->left) node = node->left;
 
     return node;
@@ -97,7 +94,6 @@ bst_node_s *binary_search_tree__min(bst_node_s *node)
 
 bst_node_s *binary_search_tree__max(bst_node_s *node)
 {
-
     if (node) while (node->right) node = node->right;
 
     return node;
@@ -105,7 +101,6 @@ bst_node_s *binary_search_tree__max(bst_node_s *node)
 
 bst_node_s *binary_search_tree__find(bst_node_s *root, const int val)
 {
-
     if (root && root->val != val) {
 
         if (val < root->val)
@@ -119,7 +114,6 @@ bst_node_s *binary_search_tree__find(bst_node_s *root, const int val)
 
 void binary_search_tree__print(const bst_node_s *root)
 {
-
     static int depth;
 
     if (root) {

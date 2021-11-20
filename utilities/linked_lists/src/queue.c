@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 
-int queue__init(queue_s *q, const int *val) {
-
+int queue__init(queue_s *q, const int *val)
+{
     doubly_linked_node_s *new_node;
     int retval = 0;
 
@@ -30,8 +30,8 @@ int queue__init(queue_s *q, const int *val) {
     return retval;
 }
 
-int queue__push(queue_s *q, const int val) {
-
+int queue__push(queue_s *q, const int val)
+{
     doubly_linked_node_s *new_node = malloc(sizeof(doubly_linked_node_s));
     int retval = 0;
 
@@ -55,8 +55,8 @@ int queue__push(queue_s *q, const int val) {
 }
 
 
-int queue__pop(queue_s *q, int *val) {
-
+int queue__pop(queue_s *q, int *val)
+{
     doubly_linked_node_s *old_node;
     int retval = 0;
 
@@ -78,8 +78,8 @@ int queue__pop(queue_s *q, int *val) {
     return retval;
 }
 
-void queue__clear(queue_s *q) {
-
+void queue__clear(queue_s *q)
+{
     if (q) {
 
         while (q->front)
