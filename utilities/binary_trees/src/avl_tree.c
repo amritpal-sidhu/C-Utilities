@@ -9,9 +9,7 @@
  */
 static int height(avl_node_s *node)
 {
-    int height = 0;
-    if (node) height = node->height;
-    return height;
+    return node ? node->height : 0;
 }
 
 static unsigned max_height(avl_node_s *node)
@@ -29,9 +27,7 @@ static unsigned max_height(avl_node_s *node)
 
 static int balance_factor(avl_node_s *node)
 {    
-    int bf = 0;
-    if (node) bf = height(node->left) - height(node->right);
-    return bf;
+    return node ? height(node->left) - height(node->right) : 0;
 }
 
 static avl_node_s *left_rotate(avl_node_s *pivot)
@@ -70,7 +66,6 @@ static avl_node_s *recursive_insert(avl_node_s *root, avl_node_s *new_node)
         root->right = recursive_insert(root->right, new_node);
 
     root->height = max_height(root) + 1;
-
     int bf = balance_factor(root);
 
     if (bf > 1) {
