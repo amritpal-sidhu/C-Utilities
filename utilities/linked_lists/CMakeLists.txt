@@ -1,5 +1,5 @@
 
-set(UNITY_DIR ${CMAKE_SOURCE_DIR}/throwtheswitch/unity)
+set(UNITY_DIR ${CMAKE_SOURCE_DIR}/Third-Party/Unity)
 set(TEST_RUNNER_DIR ${CMAKE_BINARY_DIR}/utilities/linked_lists/CMakeFiles)
 
 file(GLOB SOURCES src/*.c)
@@ -12,7 +12,7 @@ endif(NOT EXISTS ${TEST_RUNNER_DIR})
 
 
 add_definitions(-DUNITY_INCLUDE_CONFIG_H)
-include_directories(inc ${UNITY_DIR} ${UNITY_DIR}/src)
+include_directories(inc ${UNITY_DIR}/src)
 
 
 foreach(SRC_FILE ${SOURCES})
