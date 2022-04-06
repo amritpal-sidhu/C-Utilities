@@ -11,7 +11,6 @@ if(NOT EXISTS ${TEST_RUNNER_DIR})
 endif(NOT EXISTS ${TEST_RUNNER_DIR})
 
 
-add_definitions(-DUNITY_INCLUDE_CONFIG_H)
 include_directories(inc ${UNITY_DIR}/src)
 
 
