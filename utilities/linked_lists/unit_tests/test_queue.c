@@ -18,7 +18,7 @@ void tearDown(void)
 }
 
 
-UnityTestFunction test_empty_queue_init(void)
+void test_empty_queue_init(void)
 {
     queue_s q;
     const unsigned int expected_size = 0;
@@ -30,7 +30,7 @@ UnityTestFunction test_empty_queue_init(void)
     TEST_ASSERT_EQUAL(expected_size, q.size);
 }
 
-UnityTestFunction test_queue_init_with_value(void)
+void test_queue_init_with_value(void)
 {
     queue_s q;
     int expected_value = rand();
@@ -51,7 +51,7 @@ UnityTestFunction test_queue_init_with_value(void)
     TEST_ASSERT_EQUAL(expected_size-1, q.size);
 }
 
-UnityTestFunction test_series_of_random_values_push_and_pop(void)
+void test_series_of_random_values_push_and_pop(void)
 {
     queue_s q;
     const unsigned int number_of_values = 1024;

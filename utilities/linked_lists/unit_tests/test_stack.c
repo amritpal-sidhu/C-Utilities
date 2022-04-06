@@ -17,7 +17,7 @@ void tearDown(void)
 }
 
 
-UnityTestFunction test_empty_stack_init(void)
+void test_empty_stack_init(void)
 {
     stack_s s;
     const unsigned int expected_size = 0;
@@ -28,7 +28,7 @@ UnityTestFunction test_empty_stack_init(void)
     TEST_ASSERT_EQUAL(expected_size, s.size);
 }
 
-UnityTestFunction test_stack_init_with_value(void)
+void test_stack_init_with_value(void)
 {
     stack_s s;
     int expected_value = rand();
@@ -47,7 +47,7 @@ UnityTestFunction test_stack_init_with_value(void)
     TEST_ASSERT_EQUAL(expected_size-1, s.size);
 }
 
-UnityTestFunction test_series_of_random_values_push_and_pop(void)
+void test_series_of_random_values_push_and_pop(void)
 {
     stack_s s;
     const unsigned int number_of_values = 64;
