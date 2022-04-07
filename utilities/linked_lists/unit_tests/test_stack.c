@@ -29,7 +29,7 @@ void test_stack_init_with_value(void)
     stack_s s;
     int expected_value = rand();
     const unsigned int expected_size = 1;
-    int *actual_value = expected_value+32;
+    int actual_value = expected_value+32;
 
     TEST_ASSERT(stack__init(&s, sizeof(int)));
     TEST_ASSERT(stack__push(&s, &expected_value));
