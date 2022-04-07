@@ -1,25 +1,18 @@
 #include "stack.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 
-int stack__init(stack_s *s, void *obj)
+int stack__init(stack_s *s, const unsigned int element_size)
 {
-    singly_linked_node_s *new_node;
     int retval = 0;
 
-    if (s) {
+    if (s && element_size) {
 
         s->top = NULL;
+        s->element_size = element_size;
         s->size = 0;
-
-        if (obj && (new_node=malloc(sizeof(singly_linked_node_s)))) {
-
-            new_node->obj = obj;
-            new_node->next = NULL;
-            s->top = new_node;
-            s->size = 1;
-        }
 
         retval = 1;
     }
@@ -27,14 +20,15 @@ int stack__init(stack_s *s, void *obj)
     return retval;
 }
 
-int stack__push(stack_s *s, void *obj)
+int stack__push(stack_s *s, const void *obj)
 {
-    singly_linked_node_s *new_node = malloc(sizeof(singly_linked_node_s));
     int retval = 0;
+    singly_linked_node_s *new_node = malloc(sizeof(singly_linked_node_s));
 
-    if (s && obj && new_node) {
+    if (s && s->element_size && obj && new_node
+        && (new_node->obj=malloc(s->element_size))) {
 
-        new_node->obj = obj;
+        memcpy(new_node->obj, obj, s->element_size);
         new_node->next = NULL;
         new_node->next = s->top;
         s->top = new_node;
@@ -46,7 +40,7 @@ int stack__push(stack_s *s, void *obj)
 }
 
 
-int stack__pop(stack_s *s, void **obj)
+int stack__pop(stack_s *s, void *obj)
 {
     singly_linked_node_s *old_node;
     int retval = 0;
@@ -57,7 +51,7 @@ int stack__pop(stack_s *s, void **obj)
         s->top = old_node->next;
 
         if (obj)
-            *obj = old_node->obj;
+            memcpy(obj, old_node->obj, s->element_size);
 
         free(old_node);
         s->size -= 1;
