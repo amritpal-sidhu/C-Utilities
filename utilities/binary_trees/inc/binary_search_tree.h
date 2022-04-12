@@ -4,50 +4,29 @@
  * future reference.
  */
 
+typedef int (*compare_function_t)(const void *a, const void *b);
+
 typedef struct bst_node_s {
 
-    int val;
+    void *obj;
     struct bst_node_s *left;
     struct bst_node_s *right;
 
 } bst_node_s;
 
-/**
- * @param  root: pointer to root of the tree
- * @param  val: value to delete from the tree
- * @retval Pointer to the root of the tree
- */
-bst_node_s *binary_search_tree__insert(bst_node_s *root, const int val);
+typedef struct bst_s {
 
-/**
- * @param  root: pointer to root of tree
- * @param  val: value to delete from the tree
- * @retval Pointer to the root of the tree
- */
-bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val);
+    bst_node_s *root;
+    unsigned int element_size;
+    compare_function_t compare_function;
+    unsigned int size;
+    
+} bst_s;
 
-/**
- * @param  node: The relative node for which a min value will
- *               be searched for.
- * @return Pointer to min value node relative to argument
- */
-bst_node_s *binary_search_tree__min(bst_node_s *node);
 
-/**
- * @param  node: The relative node for which a max value will
- *               be searched for.
- * @return Pointer to max value node relative to argument
- */
-bst_node_s *binary_search_tree__max(bst_node_s *node);
-
-/**
- * @param  root: pointer to root of the tree
- * @param  val: Value of data at tree node
- * @retval Pointer to node with first matching value, or NULL
- */
-bst_node_s *binary_search_tree__find(bst_node_s *root, const int val);
-
-/**
- * Print the contents of the tree.
- */
-void binary_search_tree__print(const bst_node_s *root);
+int binary_search_tree__init(bst_s *bst, const unsigned int element_size, compare_function_t compare_function);
+int binary_search_tree__insert(bst_s *bst, const void *obj);
+int binary_search_tree__delete(bst_s *bst, const void *obj);
+int binary_search_tree__min(bst_s *bst, bst_node_s *min);
+int binary_search_tree__max(bst_s *bst, bst_node_s *max);
+int binary_search_tree__find(bst_s *bst, const void *obj, bst_node_s *node);

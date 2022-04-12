@@ -24,6 +24,17 @@ static FILE *get_file_handle(const char *filename);
 static void inorder_str_write(bst_node_s *root);
 
 /**
+ * Compare function for BST
+ */
+int compare_function(const void *a, const void *b) {
+
+    int a_int = *((int*)a);
+    int b_int = *((int*)b);
+
+    return a_int - b_int;
+}
+
+/**
  * Test functions
  */
 void setUp(void)
@@ -44,7 +55,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    bst_node_s *root = NULL, *ptr = NULL;
+    bst_s bst = {0};
+    bst_node_s *ptr = NULL;
+
+    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), compare_function));
 
     if (input_file && output_file) {
 
@@ -54,13 +68,13 @@ void test_tree_using_predetermined_data(void)
 
             switch (cmd)
             {
-            case 'i': root = binary_search_tree__insert(root, value);
+            case 'i': TEST_ASSERT(binary_search_tree__insert(&bst, &value));
                 break;
 
-            case 'd': root = binary_search_tree__delete(root, value);
+            case 'd': TEST_ASSERT(binary_search_tree__delete(&bst, &value));
                 break;
 
-            case 'f': ptr = binary_search_tree__find(root, value);
+            case 'f': TEST_ASSERT(binary_search_tree__find(&bst, &value, ptr));
                 break;
             
             default:
@@ -68,7 +82,7 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(root);
+            inorder_str_write(bst.root);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -114,7 +128,7 @@ static void inorder_str_write(bst_node_s *root)
     if (root) {
         inorder_str_write(root->left);
 
-        sprintf(local_str_buf, "%i ", root->val);
+        sprintf(local_str_buf, "%i ", *((int*)root->obj));
         strcat(write_str_buf, local_str_buf);
 
         inorder_str_write(root->right);
