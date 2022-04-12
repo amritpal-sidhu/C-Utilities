@@ -48,6 +48,23 @@ void tearDown(void)
     
 }
 
+void test_init_with_insert(void)
+{
+    const unsigned int expected_init_element_size = 0;
+    const compare_function_t expected_init_func_value = NULL;
+    const unsigned int expected_init_size = 0;
+    bst_s bst = {0};
+    int value = 0;
+
+    TEST_ASSERT_EQUAL(expected_init_element_size, bst.element_size);
+    TEST_ASSERT_EQUAL(expected_init_func_value, bst.compare_function);
+    TEST_ASSERT_EQUAL(expected_init_size, bst.size);
+
+    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), compare_function));
+    TEST_ASSERT(binary_search_tree__insert(&bst, &value));
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), compare_function));
+}
+
 void test_tree_using_predetermined_data(void)
 {
     FILE *input_file = get_file_handle(input_filename);

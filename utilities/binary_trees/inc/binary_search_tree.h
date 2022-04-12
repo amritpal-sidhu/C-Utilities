@@ -23,7 +23,22 @@ typedef struct bst_s {
     
 } bst_s;
 
-
+/**
+ *  Initialize the bst handle to 0 or NULL
+ *      e.g. bst_s bst = {0};
+ * 
+ *  Compare function should return:
+ *      < 0 when a < b
+ *        0 when a == b
+ *      > 0 when a > b
+ * 
+ *  @param bst: reference to binary search tree handle
+ *  @param element_size: size of objects/elements to be stored in bst nodes
+ *  @param compare_function: function used to compare bst objects/elements
+ *  @return True (1) when bst handle can be initialized
+ *          False (0) in the case bst handle doesn't exist or objects have been put
+ *          into the tree already.
+ */
 int binary_search_tree__init(bst_s *bst, const unsigned int element_size, compare_function_t compare_function);
 int binary_search_tree__insert(bst_s *bst, const void *obj);
 int binary_search_tree__delete(bst_s *bst, const void *obj);
