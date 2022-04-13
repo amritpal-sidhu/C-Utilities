@@ -1,7 +1,10 @@
-#pragma once
 /**
  * Red Black Tree implementation in C
  */
+
+#pragma once
+
+#include "binary_tree_types.h"
 
 typedef enum {
     RED,
@@ -10,7 +13,7 @@ typedef enum {
 
 typedef struct rb_node_s {
 
-    int val;
+    void *obj;
     struct rb_node_s *parent;
     struct rb_node_s *left;
     struct rb_node_s *right;
@@ -18,46 +21,19 @@ typedef struct rb_node_s {
 
 } rb_node_s;
 
-/**
- * @param  root: reference pointer to the root of the tree
- * @param  val: value to delete from the tree
- * @retval Integral value indicating success or failure,
- *         1 and 0 respectively
- */
-int red_black_tree__insert(rb_node_s **root, const int val);
+typedef struct rb_s {
 
-/**
- * @param  root: reference pointer to the root of the tree
- * @param  val: value to delete from the tree
- * @retval Integral value indicating success or failure,
- *         1 and 0 respectively
- */
-int red_black_tree__delete(rb_node_s **root, const int val);
+    rb_node_s *root;
+    unsigned int element_size;
+    compare_function_t compare_function;
+    unsigned int size;
 
-/**
- * @param  node: The relative node for which a max value will
- *               be searched for.
- * @return Pointer to max value node relative to argument
- */
-rb_node_s *red_black_tree__min(rb_node_s *node);
+} rb_s;
 
-/**
- * @param  node: The relative node for which a max value will
- *               be searched for.
- * @return Pointer to max value node relative to argument
- */
-rb_node_s *red_black_tree__max(rb_node_s *node);
 
-/**
- * @param  root: pointer to root of the tree
- * @param  val: Value of data at tree node
- * @retval Pointer to node with first matching value, or NULL
- */
-rb_node_s *red_black_tree__find(rb_node_s *root, const int val);
-
-/**
- * Print the contents of the tree.
- * 
- * @param  root: pointer to root of the tree
- */
-void red_black_tree__print(const rb_node_s *root);
+int red_black_tree__init(rb_s *rb, const unsigned int element_size, compare_function_t compare_function);
+int red_black_tree__insert(rb_s *rb, const void *obj);
+int red_black_tree__delete(rb_s *rb, const void *obj);
+int red_black_tree__min(rb_s *rb, rb_node_s *min);
+int red_black_tree__max(rb_s *rb, rb_node_s *max);
+int red_black_tree__find(rb_s *rb, const void *obj, rb_node_s *node);
