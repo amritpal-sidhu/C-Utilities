@@ -21,12 +21,12 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(rb_node_s *root);
+static void inorder_str_write(rb_node_t *root);
 
 /**
  * Compare function for BST
  */
-int compare_function(const void *a, const void *b) {
+int cmp(const void *a, const void *b) {
 
     int a_int = *((int*)a);
     int b_int = *((int*)b);
@@ -53,18 +53,18 @@ void test_init_with_insert(void)
     const unsigned int expected_init_element_size = 0;
     const compare_function_t expected_init_func_value = NULL;
     const unsigned int expected_init_size = 0;
-    rb_s rb = {0};
+    rb_t rb = {0};
     int value = 0;
 
     TEST_ASSERT_EQUAL(expected_init_element_size, rb.element_size);
-    TEST_ASSERT_EQUAL(expected_init_func_value, rb.compare_function);
+    TEST_ASSERT_EQUAL(expected_init_func_value, rb.cmp_f);
     TEST_ASSERT_EQUAL(expected_init_size, rb.size);
 
-    TEST_ASSERT_FALSE(red_black_tree__init(&rb, 0, compare_function));
+    TEST_ASSERT_FALSE(red_black_tree__init(&rb, 0, cmp));
     TEST_ASSERT_FALSE(red_black_tree__init(&rb, sizeof(int), NULL));
-    TEST_ASSERT(red_black_tree__init(&rb, sizeof(int), compare_function));
+    TEST_ASSERT(red_black_tree__init(&rb, sizeof(int), cmp));
     TEST_ASSERT(red_black_tree__insert(&rb, &value));
-    TEST_ASSERT_FALSE(red_black_tree__init(&rb, sizeof(int), compare_function));
+    TEST_ASSERT_FALSE(red_black_tree__init(&rb, sizeof(int), cmp));
     TEST_ASSERT(red_black_tree__delete(&rb, &value));
 }
 
@@ -75,10 +75,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    rb_s rb = {0};
-    rb_node_s *ptr = NULL;
+    rb_t rb = {0};
+    rb_node_t *ptr = NULL;
 
-    TEST_ASSERT(red_black_tree__init(&rb, sizeof(int), compare_function));
+    TEST_ASSERT(red_black_tree__init(&rb, sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -141,7 +141,7 @@ static FILE *get_file_handle(const char *filename)
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(rb_node_s *root)
+static void inorder_str_write(rb_node_t *root)
 {
     char local_str_buf[STR_BUF_SIZE];
 

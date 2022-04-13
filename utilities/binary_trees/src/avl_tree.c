@@ -8,43 +8,43 @@
 /**
  * Private function declarations
  */
-static int height(avl_node_s *node);
-static unsigned max_height(avl_node_s *node);
-static int balance_factor(avl_node_s *node);
-static avl_node_s *left_rotate(avl_node_s *pivot);
-static avl_node_s *right_rotate(avl_node_s *pivot);
-static avl_node_s *recursive_insert(avl_s *avl, avl_node_s *node, avl_node_s *new_node);
-static avl_node_s *avl_tree__delete_helper(avl_s *avl, avl_node_s *node, const void *obj);
-static avl_node_s *avl_tree__min_helper(avl_node_s *node);
-static avl_node_s *avl_tree__max_helper(avl_node_s *node);
-static avl_node_s *avl_tree__find_helper(avl_s *avl, avl_node_s *node, const void *obj);
+static int height(avl_node_t *node);
+static unsigned max_height(avl_node_t *node);
+static int balance_factor(avl_node_t *node);
+static avl_node_t *left_rotate(avl_node_t *pivot);
+static avl_node_t *right_rotate(avl_node_t *pivot);
+static avl_node_t *recursive_insert(avl_t *avl, avl_node_t *node, avl_node_t *new_node);
+static avl_node_t *delete_helper(avl_t *avl, avl_node_t *node, const void *obj);
+static avl_node_t *min_helper(avl_node_t *node);
+static avl_node_t *max_helper(avl_node_t *node);
+static avl_node_t *find_helper(avl_t *avl, avl_node_t *node, const void *obj);
 
 
 /**
  * Public function definitions
  */
-int avl_tree__init(avl_s *avl, const unsigned int element_size, compare_function_t compare_function)
+int avl_tree__init(avl_t *avl, const unsigned int element_size, compare_function_t cmp_f)
 {
-    int valid = avl && !avl->size && element_size && compare_function;
+    int valid = avl && !avl->size && element_size && cmp_f;
 
     if (valid) {
 
         avl->root = NULL;
         avl->element_size = element_size;
-        avl->compare_function = compare_function;
+        avl->cmp_f = cmp_f;
         avl->size = 0;
     }
 
     return valid;
 }
 
-int avl_tree__insert(avl_s *avl, const void *obj)
+int avl_tree__insert(avl_t *avl, const void *obj)
 {   
-    int valid = avl && avl->element_size && avl->compare_function && obj;
+    int valid = avl && avl->element_size && avl->cmp_f && obj;
 
     if (valid) {
 
-        avl_node_s *new_node = malloc(sizeof(avl_node_s));
+        avl_node_t *new_node = malloc(sizeof(avl_node_t));
 
         new_node->obj = malloc(avl->element_size);
         memcpy(new_node->obj, obj, avl->element_size);
@@ -59,42 +59,42 @@ int avl_tree__insert(avl_s *avl, const void *obj)
     return valid;
 }
 
-int avl_tree__delete(avl_s *avl, const void *obj)
+int avl_tree__delete(avl_t *avl, const void *obj)
 {
-    int valid = avl && avl->root && avl->compare_function && obj;
+    int valid = avl && avl->root && avl->cmp_f && obj;
 
     if (valid)
-        avl->root = avl_tree__delete_helper(avl, avl->root, obj);
+        avl->root = delete_helper(avl, avl->root, obj);
 
     return valid;
 }
 
-int avl_tree__min(avl_s *avl, avl_node_s *min)
+int avl_tree__min(avl_t *avl, avl_node_t *min)
 {
-    int valid = avl && avl->root && avl->compare_function && min;
+    int valid = avl && avl->root && avl->cmp_f && min;
 
     if (valid)
-        min = avl_tree__min_helper(avl->root);
+        min = min_helper(avl->root);
 
     return valid;
 }
 
-int avl_tree__max(avl_s *avl, avl_node_s *max)
+int avl_tree__max(avl_t *avl, avl_node_t *max)
 {
-    int valid = avl && avl->root && avl->compare_function && max;
+    int valid = avl && avl->root && avl->cmp_f && max;
 
     if (valid)
-        max = avl_tree__max_helper(avl->root);
+        max = max_helper(avl->root);
 
     return valid;
 }
 
-int avl_tree__find(avl_s *avl, const void *obj, avl_node_s *node)
+int avl_tree__find(avl_t *avl, const void *obj, avl_node_t *node)
 {
-    int valid = avl && avl->compare_function && obj && node;
+    int valid = avl && avl->cmp_f && obj && node;
 
     if (valid)
-        node = avl_tree__find_helper(avl, avl->root, obj);
+        node = find_helper(avl, avl->root, obj);
 
     return valid;
 }
@@ -103,14 +103,14 @@ int avl_tree__find(avl_s *avl, const void *obj, avl_node_s *node)
 /**
  * Private function definitions
  */
-static int height(avl_node_s *node)
+static int height(avl_node_t *node)
 {
     int height = 0;
     if (node) height = node->height;
     return height;
 }
 
-static unsigned max_height(avl_node_s *node)
+static unsigned max_height(avl_node_t *node)
 {
     int max_height = 0;
 
@@ -123,16 +123,16 @@ static unsigned max_height(avl_node_s *node)
     return max_height;
 }
 
-static int balance_factor(avl_node_s *node)
+static int balance_factor(avl_node_t *node)
 {    
     int bf = 0;
     if (node) bf = height(node->left) - height(node->right);
     return bf;
 }
 
-static avl_node_s *left_rotate(avl_node_s *pivot)
+static avl_node_t *left_rotate(avl_node_t *pivot)
 {
-    avl_node_s *new_pivot = pivot->right;
+    avl_node_t *new_pivot = pivot->right;
 
     pivot->right = new_pivot->left;
     new_pivot->left = pivot;
@@ -143,9 +143,9 @@ static avl_node_s *left_rotate(avl_node_s *pivot)
     return new_pivot;
 }
 
-static avl_node_s *right_rotate(avl_node_s *pivot)
+static avl_node_t *right_rotate(avl_node_t *pivot)
 {
-    avl_node_s *new_pivot = pivot->left;
+    avl_node_t *new_pivot = pivot->left;
 
     pivot->left = new_pivot->right;
     new_pivot->right = pivot;
@@ -156,11 +156,11 @@ static avl_node_s *right_rotate(avl_node_s *pivot)
     return new_pivot;
 }
 
-static avl_node_s *recursive_insert(avl_s *avl, avl_node_s *node, avl_node_s *new_node)
+static avl_node_t *recursive_insert(avl_t *avl, avl_node_t *node, avl_node_t *new_node)
 {
     if (!node)
         node = new_node;
-    else if (avl->compare_function(new_node->obj, node->obj) < 0)
+    else if (avl->cmp_f(new_node->obj, node->obj) < 0)
         node->left = recursive_insert(avl, node->left, new_node);
     else
         node->right = recursive_insert(avl, node->right, new_node);
@@ -171,18 +171,18 @@ static avl_node_s *recursive_insert(avl_s *avl, avl_node_s *node, avl_node_s *ne
 
     if (bf > 1) {
 
-        if (avl->compare_function(new_node->obj, node->left->obj) < 0)
+        if (avl->cmp_f(new_node->obj, node->left->obj) < 0)
             node = right_rotate(node);
-        else if (avl->compare_function(new_node->obj, node->left->obj) > 0) {
+        else if (avl->cmp_f(new_node->obj, node->left->obj) > 0) {
             node->left = left_rotate(node->left);
             node = right_rotate(node);
         }
 
     } else if (bf < -1) {
 
-        if (avl->compare_function(new_node->obj, node->right->obj) > 0)
+        if (avl->cmp_f(new_node->obj, node->right->obj) > 0)
             node = left_rotate(node);
-        else if (avl->compare_function(new_node->obj, node->right->obj) < 0) {
+        else if (avl->cmp_f(new_node->obj, node->right->obj) < 0) {
             node->right = right_rotate(node->right);
             node = left_rotate(node);
         }
@@ -191,19 +191,19 @@ static avl_node_s *recursive_insert(avl_s *avl, avl_node_s *node, avl_node_s *ne
     return node;
 }
 
-static avl_node_s *avl_tree__delete_helper(avl_s *avl, avl_node_s *node, const void *obj)
+static avl_node_t *delete_helper(avl_t *avl, avl_node_t *node, const void *obj)
 {
     if (node) {
 
-        if (avl->compare_function(obj, node->obj) < 0)
-            node->left = avl_tree__delete_helper(avl, node->left, obj);
+        if (avl->cmp_f(obj, node->obj) < 0)
+            node->left = delete_helper(avl, node->left, obj);
 
-        else if (avl->compare_function(obj, node->obj) > 0)
-            node->right = avl_tree__delete_helper(avl, node->right, obj);
+        else if (avl->cmp_f(obj, node->obj) > 0)
+            node->right = delete_helper(avl, node->right, obj);
 
         else {
 
-            avl_node_s *node_to_delete = node;
+            avl_node_t *node_to_delete = node;
 
             if ( !node_to_delete->left && !node_to_delete->right ) {
                 node = NULL;
@@ -225,9 +225,9 @@ static avl_node_s *avl_tree__delete_helper(avl_s *avl, avl_node_s *node, const v
             
             } else {
                 /* Replace with predecessor approach */
-                node_to_delete = avl_tree__max_helper(node->left);
+                node_to_delete = max_helper(node->left);
                 memcpy(node->obj, node_to_delete->obj, avl->element_size);
-                node->left = avl_tree__delete_helper(avl, node->left, node->obj);
+                node->left = delete_helper(avl, node->left, node->obj);
             }
         }
 
@@ -258,30 +258,30 @@ static avl_node_s *avl_tree__delete_helper(avl_s *avl, avl_node_s *node, const v
     return node;
 }
 
-static avl_node_s *avl_tree__min_helper(avl_node_s *node)
+static avl_node_t *min_helper(avl_node_t *node)
 {
     if (node) while (node->left) node = node->left;
 
     return node;
 }
 
-static avl_node_s *avl_tree__max_helper(avl_node_s *node)
+static avl_node_t *max_helper(avl_node_t *node)
 {
     if (node) while (node->right) node = node->right;
 
     return node;
 }
 
-static avl_node_s *avl_tree__find_helper(avl_s *avl, avl_node_s *node, const void *obj)
+static avl_node_t *find_helper(avl_t *avl, avl_node_t *node, const void *obj)
 {
-    int valid_and_not_found = node && avl->compare_function(obj, node->obj);
+    int valid_and_not_found = node && avl->cmp_f(obj, node->obj);
 
     if (valid_and_not_found) {
 
-        if (avl->compare_function(obj, node->obj) < 0)
-            node = avl_tree__find_helper(avl, node->left, obj);
+        if (avl->cmp_f(obj, node->obj) < 0)
+            node = find_helper(avl, node->left, obj);
         else
-            node = avl_tree__find_helper(avl, node->right, obj);
+            node = find_helper(avl, node->right, obj);
     }
 
     return node;

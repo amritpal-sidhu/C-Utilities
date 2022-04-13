@@ -19,14 +19,14 @@ void tearDown(void)
 
 void test_empty_stack_init(void)
 {
-    stack_s s;
+    stack_t s;
 
     TEST_ASSERT_FALSE(stack__init(&s, 0));
 }
 
 void test_stack_init_with_value(void)
 {
-    stack_s s;
+    stack_t s;
     int expected_value = rand();
     const unsigned int expected_size = 1;
     int actual_value = expected_value+32;
@@ -43,7 +43,7 @@ void test_stack_init_with_value(void)
 
 void test_series_of_random_values_push_and_pop(void)
 {
-    stack_s s;
+    stack_t s;
     const unsigned int number_of_values = 64;
     int expected_values[number_of_values];
     int actual_value;

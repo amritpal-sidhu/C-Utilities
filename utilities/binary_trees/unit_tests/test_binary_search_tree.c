@@ -21,12 +21,12 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(bst_node_s *root);
+static void inorder_str_write(bst_node_t *root);
 
 /**
  * Compare function for BST
  */
-int compare_function(const void *a, const void *b) {
+int cmp(const void *a, const void *b) {
 
     int a_int = *((int*)a);
     int b_int = *((int*)b);
@@ -53,18 +53,18 @@ void test_init_with_insert(void)
     const unsigned int expected_init_element_size = 0;
     const compare_function_t expected_init_func_value = NULL;
     const unsigned int expected_init_size = 0;
-    bst_s bst = {0};
+    bst_t bst = {0};
     int value = 0;
 
     TEST_ASSERT_EQUAL(expected_init_element_size, bst.element_size);
-    TEST_ASSERT_EQUAL(expected_init_func_value, bst.compare_function);
+    TEST_ASSERT_EQUAL(expected_init_func_value, bst.cmp_f);
     TEST_ASSERT_EQUAL(expected_init_size, bst.size);
 
-    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, 0, compare_function));
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, 0, cmp));
     TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), NULL));
-    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), compare_function));
+    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), cmp));
     TEST_ASSERT(binary_search_tree__insert(&bst, &value));
-    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), compare_function));
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), cmp));
     TEST_ASSERT(binary_search_tree__delete(&bst, &value));
 }
 
@@ -75,10 +75,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    bst_s bst = {0};
-    bst_node_s *ptr = NULL;
+    bst_t bst = {0};
+    bst_node_t *ptr = NULL;
 
-    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), compare_function));
+    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -141,7 +141,7 @@ static FILE *get_file_handle(const char *filename)
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(bst_node_s *root)
+static void inorder_str_write(bst_node_t *root)
 {
     char local_str_buf[STR_BUF_SIZE];
 

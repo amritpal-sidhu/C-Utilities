@@ -8,44 +8,44 @@
 /**
  * Private functions declarations
  */
-static rb_node_s *left_rotate(rb_node_s **root, rb_node_s *pivot);
-static rb_node_s *right_rotate(rb_node_s **root, rb_node_s *pivot);
-static void insert_fixup(rb_node_s **root, rb_node_s *node);
-static void delete_fixup(rb_node_s **root, rb_node_s *node);
-static void transplant(rb_node_s **root, const rb_node_s *old_node, rb_node_s *new_node);
-static void insert_helper(rb_s *rb, rb_node_s **root, rb_node_s *new_node);
-static void delete_helper(rb_s *rb, rb_node_s **root, const void *obj);
-static rb_node_s *min_helper(rb_node_s *node);
-static rb_node_s *max_helper(rb_node_s *node);
-static rb_node_s *find_helper(rb_s *rb, rb_node_s *root, const void *obj);
+static rb_node_t *left_rotate(rb_node_t **root, rb_node_t *pivot);
+static rb_node_t *right_rotate(rb_node_t **root, rb_node_t *pivot);
+static void insert_fixup(rb_node_t **root, rb_node_t *node);
+static void delete_fixup(rb_node_t **root, rb_node_t *node);
+static void transplant(rb_node_t **root, const rb_node_t *old_node, rb_node_t *new_node);
+static void insert_helper(rb_t *rb, rb_node_t **root, rb_node_t *new_node);
+static void delete_helper(rb_t *rb, rb_node_t **root, const void *obj);
+static rb_node_t *min_helper(rb_node_t *node);
+static rb_node_t *max_helper(rb_node_t *node);
+static rb_node_t *find_helper(rb_t *rb, rb_node_t *root, const void *obj);
 
 
 
 /**
  * Public function definitions
  */
-int red_black_tree__init(rb_s *rb, const unsigned int element_size, compare_function_t compare_function)
+int red_black_tree__init(rb_t *rb, const unsigned int element_size, compare_function_t cmp_f)
 {
-    int valid = rb && !rb->size && element_size && compare_function;
+    int valid = rb && !rb->size && element_size && cmp_f;
 
     if (valid) {
 
         rb->root = NULL;
         rb->element_size = element_size;
-        rb->compare_function = compare_function;
+        rb->cmp_f = cmp_f;
         rb->size = 0;
     }
 
     return valid;
 }
 
-int red_black_tree__insert(rb_s *rb, const void *obj)
+int red_black_tree__insert(rb_t *rb, const void *obj)
 {
-    int valid = rb && rb->element_size && rb->compare_function && obj;
+    int valid = rb && rb->element_size && rb->cmp_f && obj;
 
     if (valid) {
 
-        rb_node_s *new_node = malloc(sizeof(rb_node_s));
+        rb_node_t *new_node = malloc(sizeof(rb_node_t));
 
         new_node->obj = malloc(sizeof(rb->element_size));
         memcpy(new_node->obj, obj, rb->element_size);
@@ -60,9 +60,9 @@ int red_black_tree__insert(rb_s *rb, const void *obj)
     return valid;
 }
 
-int red_black_tree__delete(rb_s *rb, const void *obj)
+int red_black_tree__delete(rb_t *rb, const void *obj)
 {
-    int valid = rb && rb->root && rb->compare_function && obj;
+    int valid = rb && rb->root && rb->cmp_f && obj;
 
     if (valid)
         delete_helper(rb, &rb->root, obj);
@@ -70,9 +70,9 @@ int red_black_tree__delete(rb_s *rb, const void *obj)
     return valid;
 }
 
-int red_black_tree__min(rb_s *rb, rb_node_s *min)
+int red_black_tree__min(rb_t *rb, rb_node_t *min)
 {
-    int valid = rb && rb->root && rb->compare_function && min;
+    int valid = rb && rb->root && rb->cmp_f && min;
 
     if (valid)
         min = min_helper(rb->root);
@@ -80,9 +80,9 @@ int red_black_tree__min(rb_s *rb, rb_node_s *min)
     return valid;
 }
 
-int red_black_tree__max(rb_s *rb, rb_node_s *max)
+int red_black_tree__max(rb_t *rb, rb_node_t *max)
 {
-    int valid = rb && rb->root && rb->compare_function && max;
+    int valid = rb && rb->root && rb->cmp_f && max;
 
     if (valid)
         max = max_helper(rb->root);
@@ -90,9 +90,9 @@ int red_black_tree__max(rb_s *rb, rb_node_s *max)
     return valid;
 }
 
-int red_black_tree__find(rb_s *rb, const void *obj, rb_node_s *node)
+int red_black_tree__find(rb_t *rb, const void *obj, rb_node_t *node)
 {
-    int valid = rb && rb->compare_function && obj && node;
+    int valid = rb && rb->cmp_f && obj && node;
 
     if (valid)
         node = find_helper(rb, rb->root, obj);
@@ -104,9 +104,9 @@ int red_black_tree__find(rb_s *rb, const void *obj, rb_node_s *node)
 /**
  * Private functions definitions
  */
-static rb_node_s *left_rotate(rb_node_s **root, rb_node_s *pivot)
+static rb_node_t *left_rotate(rb_node_t **root, rb_node_t *pivot)
 {
-    rb_node_s *new_pivot = pivot->right;
+    rb_node_t *new_pivot = pivot->right;
 
     pivot->right = new_pivot->left;
     if (pivot->right) pivot->right->parent = pivot;
@@ -126,9 +126,9 @@ static rb_node_s *left_rotate(rb_node_s **root, rb_node_s *pivot)
     return new_pivot;
 }
 
-static rb_node_s *right_rotate(rb_node_s **root, rb_node_s *pivot)
+static rb_node_t *right_rotate(rb_node_t **root, rb_node_t *pivot)
 {
-    rb_node_s *new_pivot = pivot->left;
+    rb_node_t *new_pivot = pivot->left;
 
     pivot->left = new_pivot->right;
     if (pivot->left) pivot->left->parent = pivot;
@@ -155,15 +155,15 @@ static rb_node_s *right_rotate(rb_node_s **root, rb_node_s *pivot)
  * @param  root: reference pointer to the root of the tree
  * @param  node: pointer to the starting node
  */
-static void insert_fixup(rb_node_s **root, rb_node_s *node)
+static void insert_fixup(rb_node_t **root, rb_node_t *node)
 {
     while (node->parent && node->parent->color == RED) {
 
-        rb_node_s *grandparent = node->parent->parent;
+        rb_node_t *grandparent = node->parent->parent;
 
         if (grandparent->left == node->parent) {
 
-            rb_node_s *parents_sibling = grandparent->right;
+            rb_node_t *parents_sibling = grandparent->right;
 
             if (parents_sibling && parents_sibling->color == RED) {
 
@@ -186,7 +186,7 @@ static void insert_fixup(rb_node_s **root, rb_node_s *node)
         
         } else {
 
-            rb_node_s *parents_sibling = grandparent->left;
+            rb_node_t *parents_sibling = grandparent->left;
 
             if (parents_sibling && parents_sibling->color == RED) {
 
@@ -218,13 +218,13 @@ static void insert_fixup(rb_node_s **root, rb_node_s *node)
  * @param  root: reference pointer to the root of the tree
  * @param  node: pointer to the starting node
  */
-static void delete_fixup(rb_node_s **root, rb_node_s *node)
+static void delete_fixup(rb_node_t **root, rb_node_t *node)
 {
     while (node && node != *root && node->color == BLACK) {
 
         if (node->parent->left == node) {
 
-            rb_node_s *sibling = node->parent->right;
+            rb_node_t *sibling = node->parent->right;
 
             if (sibling) {
 
@@ -262,7 +262,7 @@ static void delete_fixup(rb_node_s **root, rb_node_s *node)
         
         } else {
 
-            rb_node_s *sibling = node->parent->left;
+            rb_node_t *sibling = node->parent->left;
 
             if (sibling) {
 
@@ -308,7 +308,7 @@ static void delete_fixup(rb_node_s **root, rb_node_s *node)
  * @param  old_node: pointer to the node to be transplanted
  * @param  new_node: pointer to the node to transplant with
  */
-static void transplant(rb_node_s **root, const rb_node_s *old_node, rb_node_s *new_node)
+static void transplant(rb_node_t **root, const rb_node_t *old_node, rb_node_t *new_node)
 {
     if (*root && old_node) {
 
@@ -324,9 +324,9 @@ static void transplant(rb_node_s **root, const rb_node_s *old_node, rb_node_s *n
     }
 }
 
-static void insert_helper(rb_s *rb, rb_node_s **root, rb_node_s *new_node)
+static void insert_helper(rb_t *rb, rb_node_t **root, rb_node_t *new_node)
 {
-    rb_node_s *cur, *parent;
+    rb_node_t *cur, *parent;
 
     if (!(*root)) {
         *root = new_node;
@@ -340,7 +340,7 @@ static void insert_helper(rb_s *rb, rb_node_s **root, rb_node_s *new_node)
 
             parent = cur;
 
-            if (rb->compare_function(new_node->obj, cur->obj) < 0)
+            if (rb->cmp_f(new_node->obj, cur->obj) < 0)
                 cur = cur->left;
             else
                 cur = cur->right;
@@ -348,7 +348,7 @@ static void insert_helper(rb_s *rb, rb_node_s **root, rb_node_s *new_node)
 
         new_node->parent = parent;
 
-        if (rb->compare_function(new_node->obj, parent->obj) < 0)
+        if (rb->cmp_f(new_node->obj, parent->obj) < 0)
             parent->left = new_node;
         else
             parent->right = new_node;
@@ -357,15 +357,15 @@ static void insert_helper(rb_s *rb, rb_node_s **root, rb_node_s *new_node)
     insert_fixup(root, new_node);
 }
 
-static void delete_helper(rb_s *rb, rb_node_s **root, const void *obj)
+static void delete_helper(rb_t *rb, rb_node_t **root, const void *obj)
 {
     if (*root) {
 
-        rb_node_s *node_to_delete = *root;
+        rb_node_t *node_to_delete = *root;
 
         /* search for a matching node */
-        while (node_to_delete && rb->compare_function(obj, node_to_delete->obj)) {
-            if (rb->compare_function(obj, node_to_delete->obj) < 0)
+        while (node_to_delete && rb->cmp_f(obj, node_to_delete->obj)) {
+            if (rb->cmp_f(obj, node_to_delete->obj) < 0)
                 node_to_delete = node_to_delete->left;
             else
                 node_to_delete = node_to_delete->right;
@@ -373,15 +373,15 @@ static void delete_helper(rb_s *rb, rb_node_s **root, const void *obj)
 
         if (node_to_delete) {
 
-            rb_node_color_e original_color = node_to_delete->color;
-            rb_node_s *fixup_node;
+            rb_node_color_t original_color = node_to_delete->color;
+            rb_node_t *fixup_node;
             int free_mem_flag = 0;
 
             if ( !node_to_delete->left ) {
                 
                 fixup_node = node_to_delete->right;
                 if (!fixup_node) {
-                    fixup_node = malloc(sizeof(rb_node_s));
+                    fixup_node = malloc(sizeof(rb_node_t));
                     fixup_node->color = BLACK;
                     fixup_node->parent = node_to_delete;
                     fixup_node->left = NULL;
@@ -395,7 +395,7 @@ static void delete_helper(rb_s *rb, rb_node_s **root, const void *obj)
                 
                 fixup_node = node_to_delete->left;
                 if (!fixup_node) {
-                    fixup_node = malloc(sizeof(rb_node_s));
+                    fixup_node = malloc(sizeof(rb_node_t));
                     fixup_node->color = BLACK;
                     fixup_node->parent = node_to_delete;
                     fixup_node->left = NULL;
@@ -407,12 +407,12 @@ static void delete_helper(rb_s *rb, rb_node_s **root, const void *obj)
             
             } else {
 
-                rb_node_s *predecessor = max_helper(node_to_delete->left);
+                rb_node_t *predecessor = max_helper(node_to_delete->left);
                 
                 original_color = predecessor->color;
                 fixup_node = predecessor->left;
                 if (!fixup_node) {
-                    fixup_node = malloc(sizeof(rb_node_s));
+                    fixup_node = malloc(sizeof(rb_node_t));
                     fixup_node->color = BLACK;
                     fixup_node->parent = predecessor;
                     fixup_node->left = NULL;
@@ -455,27 +455,27 @@ static void delete_helper(rb_s *rb, rb_node_s **root, const void *obj)
     }
 }
 
-static rb_node_s *min_helper(rb_node_s *node)
+static rb_node_t *min_helper(rb_node_t *node)
 {
     if (node) while (node->left) node = node->left;
 
     return node;
 }
 
-static rb_node_s *max_helper(rb_node_s *node)
+static rb_node_t *max_helper(rb_node_t *node)
 {
     if (node) while (node->right) node = node->right;
 
     return node;
 }
 
-static rb_node_s *find_helper(rb_s *rb, rb_node_s *root, const void *obj)
+static rb_node_t *find_helper(rb_t *rb, rb_node_t *root, const void *obj)
 {
-    int valid_and_not_found = root && rb->compare_function(obj, root->obj);
+    int valid_and_not_found = root && rb->cmp_f(obj, root->obj);
 
     if (valid_and_not_found) {
 
-        if (rb->compare_function(obj, root->obj) < 0)
+        if (rb->cmp_f(obj, root->obj) < 0)
             root = find_helper(rb, root->left, obj);
         else
             root = find_helper(rb, root->right, obj);

@@ -21,12 +21,12 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(avl_node_s *root);
+static void inorder_str_write(avl_node_t *root);
 
 /**
  * Compare function for BST
  */
-int compare_function(const void *a, const void *b) {
+int cmp(const void *a, const void *b) {
 
     int a_int = *((int*)a);
     int b_int = *((int*)b);
@@ -53,18 +53,18 @@ void test_init_with_insert(void)
     const unsigned int expected_init_element_size = 0;
     const compare_function_t expected_init_func_value = NULL;
     const unsigned int expected_init_size = 0;
-    avl_s avl = {0};
+    avl_t avl = {0};
     int value = 0;
 
     TEST_ASSERT_EQUAL(expected_init_element_size, avl.element_size);
-    TEST_ASSERT_EQUAL(expected_init_func_value, avl.compare_function);
+    TEST_ASSERT_EQUAL(expected_init_func_value, avl.cmp_f);
     TEST_ASSERT_EQUAL(expected_init_size, avl.size);
 
-    TEST_ASSERT_FALSE(avl_tree__init(&avl, 0, compare_function));
+    TEST_ASSERT_FALSE(avl_tree__init(&avl, 0, cmp));
     TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), NULL));
-    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), compare_function));
+    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), cmp));
     TEST_ASSERT(avl_tree__insert(&avl, &value));
-    TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), compare_function));
+    TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), cmp));
     TEST_ASSERT(avl_tree__delete(&avl, &value));
 }
 
@@ -75,10 +75,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    avl_s avl = {0};
-    avl_node_s *ptr = NULL;
+    avl_t avl = {0};
+    avl_node_t *ptr = NULL;
 
-    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), compare_function));
+    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -141,7 +141,7 @@ static FILE *get_file_handle(const char *filename)
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(avl_node_s *root)
+static void inorder_str_write(avl_node_t *root)
 {
     char local_str_buf[STR_BUF_SIZE];
 

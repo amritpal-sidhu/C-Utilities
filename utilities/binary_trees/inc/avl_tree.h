@@ -9,21 +9,21 @@ typedef struct avl_node_s {
     struct avl_node_s *right;
     unsigned height;
 
-} avl_node_s;
+} avl_node_t;
 
 typedef struct avl_s {
 
-    avl_node_s *root;
+    avl_node_t *root;
     unsigned int element_size;
-    compare_function_t compare_function;
+    compare_function_t cmp_f;
     unsigned int size;
 
-} avl_s;
+} avl_t;
 
 
 /**
- *  Initialize the bst handle to 0 or NULL
- *      e.g. avl_s bst = {0};
+ *  Initialize the avl handle to 0 or NULL
+ *      e.g. avl_t avl = {0};
  * 
  *  Compare function should return:
  *      < 0 when a < b
@@ -32,14 +32,14 @@ typedef struct avl_s {
  * 
  *  @param avl: reference to avl tree handle
  *  @param element_size: size of objects/elements to be stored in bst nodes
- *  @param compare_function: function used to compare bst objects/elements
+ *  @param cmp_f: function used to compare bst objects/elements
  *  @return True (1) when bst handle can be initialized
  *          False (0) in the case bst handle doesn't exist or objects have been put
  *          into the tree already.
  */
-int avl_tree__init(avl_s *avl, const unsigned int element_size, compare_function_t compare_function);
-int avl_tree__insert(avl_s *avl, const void *obj);
-int avl_tree__delete(avl_s *avl, const void *obj);
-int avl_tree__min(avl_s *avl, avl_node_s *min);
-int avl_tree__max(avl_s *avl, avl_node_s *max);
-int avl_tree__find(avl_s *avl, const void *obj, avl_node_s *node);
+int avl_tree__init(avl_t *avl, const unsigned int element_size, compare_function_t cmp_f);
+int avl_tree__insert(avl_t *avl, const void *obj);
+int avl_tree__delete(avl_t *avl, const void *obj);
+int avl_tree__min(avl_t *avl, avl_node_t *min);
+int avl_tree__max(avl_t *avl, avl_node_t *max);
+int avl_tree__find(avl_t *avl, const void *obj, avl_node_t *node);

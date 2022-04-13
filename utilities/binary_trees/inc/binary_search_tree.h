@@ -12,16 +12,16 @@ typedef struct bst_node_s {
     struct bst_node_s *left;
     struct bst_node_s *right;
 
-} bst_node_s;
+} bst_node_t;
 
 typedef struct bst_s {
 
-    bst_node_s *root;
+    bst_node_t *root;
     unsigned int element_size;
-    compare_function_t compare_function;
+    compare_function_t cmp_f;
     unsigned int size;
     
-} bst_s;
+} bst_t;
 
 
 /**
@@ -35,14 +35,14 @@ typedef struct bst_s {
  * 
  *  @param bst: reference to binary search tree handle
  *  @param element_size: size of objects/elements to be stored in bst nodes
- *  @param compare_function: function used to compare bst objects/elements
+ *  @param cmp_f: function used to compare bst objects/elements
  *  @return True (1) when bst handle can be initialized
  *          False (0) in the case bst handle doesn't exist or objects have been put
  *          into the tree already.
  */
-int binary_search_tree__init(bst_s *bst, const unsigned int element_size, compare_function_t compare_function);
-int binary_search_tree__insert(bst_s *bst, const void *obj);
-int binary_search_tree__delete(bst_s *bst, const void *obj);
-int binary_search_tree__min(bst_s *bst, bst_node_s *min);
-int binary_search_tree__max(bst_s *bst, bst_node_s *max);
-int binary_search_tree__find(bst_s *bst, const void *obj, bst_node_s *node);
+int binary_search_tree__init(bst_t *bst, const unsigned int element_size, compare_function_t cmp_f);
+int binary_search_tree__insert(bst_t *bst, const void *obj);
+int binary_search_tree__delete(bst_t *bst, const void *obj);
+int binary_search_tree__min(bst_t *bst, bst_node_t *min);
+int binary_search_tree__max(bst_t *bst, bst_node_t *max);
+int binary_search_tree__find(bst_t *bst, const void *obj, bst_node_t *node);

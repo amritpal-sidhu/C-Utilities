@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-int stack__init(stack_s *s, const unsigned int element_size)
+int stack__init(stack_t *s, const unsigned int element_size)
 {
     int retval = 0;
 
@@ -20,10 +20,10 @@ int stack__init(stack_s *s, const unsigned int element_size)
     return retval;
 }
 
-int stack__push(stack_s *s, const void *obj)
+int stack__push(stack_t *s, const void *obj)
 {
     int retval = 0;
-    singly_linked_node_s *new_node = malloc(sizeof(singly_linked_node_s));
+    singly_linked_node_t *new_node = malloc(sizeof(singly_linked_node_t));
 
     if (s && s->element_size && obj && new_node
         && (new_node->obj=malloc(s->element_size))) {
@@ -40,9 +40,9 @@ int stack__push(stack_s *s, const void *obj)
 }
 
 
-int stack__pop(stack_s *s, void *obj)
+int stack__pop(stack_t *s, void *obj)
 {
-    singly_linked_node_s *old_node;
+    singly_linked_node_t *old_node;
     int retval = 0;
 
     if (s && s->top) {
@@ -61,7 +61,7 @@ int stack__pop(stack_s *s, void *obj)
     return retval;
 }
 
-void stack__clear(stack_s *s)
+void stack__clear(stack_t *s)
 {
     if (s) {
 

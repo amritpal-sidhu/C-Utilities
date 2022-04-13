@@ -20,14 +20,14 @@ void tearDown(void)
 
 void test_empty_queue_init(void)
 {
-    queue_s q;
+    queue_t q;
 
     TEST_ASSERT_FALSE(queue__init(&q, 0));
 }
 
 void test_queue_init_with_value(void)
 {
-    queue_s q;
+    queue_t q;
     int expected_value = rand();
     const unsigned int expected_size = 1;
     int actual_value = expected_value+32;
@@ -46,7 +46,7 @@ void test_queue_init_with_value(void)
 
 void test_series_of_random_values_push_and_pop(void)
 {
-    queue_s q;
+    queue_t q;
     const unsigned int number_of_values = 1024;
     int expected_values[number_of_values];
     int actual_value;

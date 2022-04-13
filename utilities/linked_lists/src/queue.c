@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-int queue__init(queue_s *q, const unsigned int element_size)
+int queue__init(queue_t *q, const unsigned int element_size)
 {
     int retval = 0;
 
@@ -21,10 +21,10 @@ int queue__init(queue_s *q, const unsigned int element_size)
     return retval;
 }
 
-int queue__push(queue_s *q, const void *obj)
+int queue__push(queue_t *q, const void *obj)
 {
     int retval = 0;
-    doubly_linked_node_s *new_node = malloc(sizeof(doubly_linked_node_s));
+    doubly_linked_node_t *new_node = malloc(sizeof(doubly_linked_node_t));
 
     if (q && q->element_size && obj && new_node
         && (new_node->obj=malloc(q->element_size))) {
@@ -49,9 +49,9 @@ int queue__push(queue_s *q, const void *obj)
 }
 
 
-int queue__pop(queue_s *q, void *obj)
+int queue__pop(queue_t *q, void *obj)
 {
-    doubly_linked_node_s *old_node;
+    doubly_linked_node_t *old_node;
     int retval = 0;
 
     if (q && q->element_size && q->front) {
@@ -75,7 +75,7 @@ int queue__pop(queue_s *q, void *obj)
     return retval;
 }
 
-void queue__clear(queue_s *q)
+void queue__clear(queue_t *q)
 {
     if (q) {
 
