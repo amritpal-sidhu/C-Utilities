@@ -1,10 +1,10 @@
-#pragma once
 /**
  * Simple binary search tree implementation in C for practice and
  * future reference.
  */
+#pragma once
 
-typedef int (*compare_function_t)(const void *a, const void *b);
+#include "binary_tree_types.h"
 
 typedef struct bst_node_s {
 
@@ -22,6 +22,7 @@ typedef struct bst_s {
     unsigned int size;
     
 } bst_s;
+
 
 /**
  *  Initialize the bst handle to 0 or NULL
