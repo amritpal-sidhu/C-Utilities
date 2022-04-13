@@ -24,6 +24,17 @@ static FILE *get_file_handle(const char *filename);
 static void inorder_str_write(avl_node_s *root);
 
 /**
+ * Compare function for BST
+ */
+int compare_function(const void *a, const void *b) {
+
+    int a_int = *((int*)a);
+    int b_int = *((int*)b);
+
+    return a_int - b_int;
+}
+
+/**
  * Test functions
  */
 void setUp(void)
@@ -37,6 +48,26 @@ void tearDown(void)
 
 }
 
+void test_init_with_insert(void)
+{
+    const unsigned int expected_init_element_size = 0;
+    const compare_function_t expected_init_func_value = NULL;
+    const unsigned int expected_init_size = 0;
+    avl_s avl = {0};
+    int value = 0;
+
+    TEST_ASSERT_EQUAL(expected_init_element_size, avl.element_size);
+    TEST_ASSERT_EQUAL(expected_init_func_value, avl.compare_function);
+    TEST_ASSERT_EQUAL(expected_init_size, avl.size);
+
+    TEST_ASSERT_FALSE(avl_tree__init(&avl, 0, compare_function));
+    TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), NULL));
+    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), compare_function));
+    TEST_ASSERT(avl_tree__insert(&avl, &value));
+    TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), compare_function));
+    TEST_ASSERT(avl_tree__delete(&avl, &value));
+}
+
 void test_tree_using_predetermined_data(void)
 {
     FILE *input_file = get_file_handle(input_filename);
@@ -44,7 +75,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    avl_node_s *root = NULL, *ptr = NULL;
+    avl_s avl = {0};
+    avl_node_s *ptr = NULL;
+
+    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), compare_function));
 
     if (input_file && output_file) {
 
@@ -54,13 +88,13 @@ void test_tree_using_predetermined_data(void)
 
             switch (cmd)
             {
-            case 'i': root = avl_tree__insert(root, value);
+            case 'i': TEST_ASSERT(avl_tree__insert(&avl, &value));
                 break;
 
-            case 'd': root = avl_tree__delete(root, value);
+            case 'd': TEST_ASSERT(avl_tree__delete(&avl, &value));
                 break;
 
-            case 'f': ptr = avl_tree__find(root, value);
+            case 'f': TEST_ASSERT(avl_tree__find(&avl, &value, ptr));
                 break;
             
             default:
@@ -68,7 +102,7 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(root);
+            inorder_str_write(avl.root);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -114,7 +148,7 @@ static void inorder_str_write(avl_node_s *root)
     if (root) {
         inorder_str_write(root->left);
 
-        sprintf(local_str_buf, "%i:%i ", root->val, root->height);
+        sprintf(local_str_buf, "%i:%i ", *((int*)root->obj), root->height);
         strcat(write_str_buf, local_str_buf);
 
         inorder_str_write(root->right);
