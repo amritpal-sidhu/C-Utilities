@@ -19,84 +19,71 @@ static bst_node_s *binary_search_tree__find_helper(bst_s *bst, bst_node_s *node,
  */
 int binary_search_tree__init(bst_s *bst, const unsigned int element_size, compare_function_t compare_function)
 {
-    int retval = 0;
+    int valid = bst && !bst->size && element_size && compare_function;
 
-    if (bst && !bst->size && element_size && compare_function) {
+    if (valid) {
 
+        /**
+         * TODO: Might need to recursivly delete previously allocated nodes
+         *       in the case of compiler using the same address.
+         */
         bst->root = NULL;
         bst->element_size = element_size;
         bst->compare_function = compare_function;
         bst->size = 0;
-
-        retval = 1;
     }
 
-    return retval;
+    return valid;
 }
 
 int binary_search_tree__insert(bst_s *bst, const void *obj)
 {
-    int retval = 0;
+    int valid = bst && bst->element_size && bst->compare_function && obj;
 
-    if (bst && bst->element_size && bst->compare_function) {
-
+    if (valid)
         binary_search_tree__insert_helper(bst, bst->root, obj);
-        retval = 1;
-    }
 
-    return retval;
+    return valid;
 }
 
 int binary_search_tree__delete(bst_s *bst, const void *obj)
 {
-    int retval = 0;
+    int valid = bst && bst->root && bst->compare_function && obj;
 
-    if (bst && bst->root && bst->compare_function) {
-
+    if (valid)
         bst->root = binary_search_tree__delete_helper(bst, bst->root, obj);
-        retval = 1;
-    }
 
-    return retval;
+    return valid;
 }
 
 int binary_search_tree__min(bst_s *bst, bst_node_s *min)
 {
-    int retval = 0;
+    int valid = bst && bst->root && bst->compare_function && min;
 
-    if (bst && bst->root && bst->compare_function) {
-     
+    if (valid)
         min = binary_search_tree__min_helper(bst->root);
-        retval = 1;
-    }
 
-    return retval;
+    return valid;
 }
 
 int binary_search_tree__max(bst_s *bst, bst_node_s *max)
 {
-    int retval = 0;
+    int valid = bst && bst->root && bst->compare_function && max;
 
-    if (bst && bst->root && bst->compare_function) {
-     
+    if (valid)
         max = binary_search_tree__max_helper(bst->root);
-        retval = 1;
-    }
 
-    return retval;
+    return valid;
 }
 
 int binary_search_tree__find(bst_s *bst, const void *obj, bst_node_s *node)
 {
-    int retval = 0;
+    int valid = bst && bst->compare_function && obj && node;
 
-    if (bst && bst->root && bst->compare_function && obj) {
-
+    if (valid)
         node = binary_search_tree__find_helper(bst, bst->root, obj);
-        if (node) retval = 1;
-    }
 
-    return retval;
+    return valid;
 }
 
 
@@ -204,7 +191,9 @@ static bst_node_s *binary_search_tree__max_helper(bst_node_s *node)
 
 static bst_node_s *binary_search_tree__find_helper(bst_s *bst, bst_node_s *node, const void *obj)
 {
-    if (node && bst->compare_function(obj, node->obj)) {
+    int valid_and_not_found = node && bst->compare_function(obj, node->obj);
+
+    if (valid_and_not_found) {
 
         if (bst->compare_function(obj, node->obj) < 0)
             node = binary_search_tree__find_helper(bst, node->left, obj);
