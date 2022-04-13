@@ -60,9 +60,12 @@ void test_init_with_insert(void)
     TEST_ASSERT_EQUAL(expected_init_func_value, bst.compare_function);
     TEST_ASSERT_EQUAL(expected_init_size, bst.size);
 
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, 0, compare_function));
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), NULL));
     TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), compare_function));
     TEST_ASSERT(binary_search_tree__insert(&bst, &value));
     TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), compare_function));
+    TEST_ASSERT(binary_search_tree__delete(&bst, &value));
 }
 
 void test_tree_using_predetermined_data(void)
