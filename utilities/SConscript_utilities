@@ -6,7 +6,7 @@ import subprocess
 ROOT_DIR = Dir(os.path.abspath("../"))
 BUILD_DIR = ROOT_DIR.Dir("_build", create=True)
 
-UNITY_DIR = ROOT_DIR.Dir("site_scons/site_tools/throwtheswitch/unity")
+UNITY_DIR = ROOT_DIR.Dir("Third-Party/Unity")
 GENERATE_TEST_RUNNER = UNITY_DIR.File("auto/generate_test_runner.rb")
 
 
@@ -47,7 +47,7 @@ def build_and_run_tests(build_dir, files, env, source_name):
 env = Environment(
     ENV=os.environ,
     CPPDEFINES="UNITY_INCLUDE_CONFIG_H",
-    CPPPATH=[UNITY_DIR.abspath, UNITY_DIR.Dir("src").abspath],
+    CPPPATH=[UNITY_DIR.Dir("src").abspath, ROOT_DIR.Dir("Third-Party").abspath],
     CCCOMSTR="Compiling static object $TARGET",
     LINKCOMSTR="Linking $TARGET"
 )
