@@ -1,53 +1,48 @@
-#pragma once
 /**
  * Simple binary search tree implementation in C for practice and
  * future reference.
  */
+#pragma once
+
+#include "binary_tree_types.h"
 
 typedef struct bst_node_s {
 
-    int val;
+    void *obj;
     struct bst_node_s *left;
     struct bst_node_s *right;
 
-} bst_node_s;
+} bst_node_t;
+
+typedef struct bst_s {
+
+    bst_node_t *root;
+    unsigned int element_size;
+    compare_function_t cmp_f;
+    unsigned int size;
+    
+} bst_t;
+
 
 /**
- * @param  root: pointer to root of the tree
- * @param  val: value to delete from the tree
- * @retval Pointer to the root of the tree
+ *  Initialize the bst handle to 0 or NULL
+ *      e.g. bst_s bst = {0};
+ * 
+ *  Compare function should return:
+ *      < 0 when a < b
+ *        0 when a == b
+ *      > 0 when a > b
+ * 
+ *  @param bst: reference to binary search tree handle
+ *  @param element_size: size of objects/elements to be stored in bst nodes
+ *  @param cmp_f: function used to compare bst objects/elements
+ *  @return True (1) when bst handle can be initialized
+ *          False (0) in the case bst handle doesn't exist or objects have been put
+ *          into the tree already.
  */
-bst_node_s *binary_search_tree__insert(bst_node_s *root, const int val);
-
-/**
- * @param  root: pointer to root of tree
- * @param  val: value to delete from the tree
- * @retval Pointer to the root of the tree
- */
-bst_node_s *binary_search_tree__delete(bst_node_s *root, const int val);
-
-/**
- * @param  node: The relative node for which a min value will
- *               be searched for.
- * @return Pointer to min value node relative to argument
- */
-bst_node_s *binary_search_tree__min(bst_node_s *node);
-
-/**
- * @param  node: The relative node for which a max value will
- *               be searched for.
- * @return Pointer to max value node relative to argument
- */
-bst_node_s *binary_search_tree__max(bst_node_s *node);
-
-/**
- * @param  root: pointer to root of the tree
- * @param  val: Value of data at tree node
- * @retval Pointer to node with first matching value, or NULL
- */
-bst_node_s *binary_search_tree__find(bst_node_s *root, const int val);
-
-/**
- * Print the contents of the tree.
- */
-void binary_search_tree__print(const bst_node_s *root);
+int binary_search_tree__init(bst_t *bst, const unsigned int element_size, compare_function_t cmp_f);
+int binary_search_tree__insert(bst_t *bst, const void *obj);
+int binary_search_tree__delete(bst_t *bst, const void *obj);
+int binary_search_tree__min(bst_t *bst, bst_node_t *min);
+int binary_search_tree__max(bst_t *bst, bst_node_t *max);
+int binary_search_tree__find(bst_t *bst, const void *obj, bst_node_t *node);

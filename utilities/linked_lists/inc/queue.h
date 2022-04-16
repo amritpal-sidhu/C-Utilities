@@ -5,16 +5,17 @@
 
 typedef struct queue_s {
 
-    doubly_linked_node_s *front;
-    doubly_linked_node_s *back;
+    doubly_linked_node_t *front;
+    doubly_linked_node_t *back;
+    unsigned int element_size;
     unsigned int size;
 
-} queue_s;
+} queue_t;
 
 
-int queue__init(queue_s *q, const int *val);
+int queue__init(queue_t *q, const unsigned int element_size);
 
-int queue__push(queue_s *q, const int val);
-int queue__pop(queue_s *q, int *val);
+int queue__push(queue_t *q, const void *obj);
+int queue__pop(queue_t *q, void *obj);
 
-void queue__clear(queue_s *q);
+void queue__clear(queue_t *q);

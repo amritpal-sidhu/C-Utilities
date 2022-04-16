@@ -5,15 +5,16 @@
 
 typedef struct stack_s {
 
-    singly_linked_node_s *top;
+    singly_linked_node_t *top;
+    unsigned int element_size;
     unsigned int size;
 
-} stack_s;
+} stack_t;
 
 
-int stack__init(stack_s *s, const int *val);
+int stack__init(stack_t *s, const unsigned int element_size);
 
-int stack__push(stack_s *s, const int val);
-int stack__pop(stack_s *s, int *val);
+int stack__push(stack_t *s, const void *obj);
+int stack__pop(stack_t *s, void *obj);
 
-void stack__clear(stack_s *s);
+void stack__clear(stack_t *s);

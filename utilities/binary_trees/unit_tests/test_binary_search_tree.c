@@ -21,7 +21,18 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(bst_node_s *root);
+static void inorder_str_write(bst_node_t *root);
+
+/**
+ * Compare function for BST
+ */
+int cmp(const void *a, const void *b) {
+
+    int a_int = *((int*)a);
+    int b_int = *((int*)b);
+
+    return a_int - b_int;
+}
 
 /**
  * Test functions
@@ -37,6 +48,26 @@ void tearDown(void)
     
 }
 
+void test_init_with_insert(void)
+{
+    const unsigned int expected_init_element_size = 0;
+    const compare_function_t expected_init_func_value = NULL;
+    const unsigned int expected_init_size = 0;
+    bst_t bst = {0};
+    int value = 0;
+
+    TEST_ASSERT_EQUAL(expected_init_element_size, bst.element_size);
+    TEST_ASSERT_EQUAL(expected_init_func_value, bst.cmp_f);
+    TEST_ASSERT_EQUAL(expected_init_size, bst.size);
+
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, 0, cmp));
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), NULL));
+    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), cmp));
+    TEST_ASSERT(binary_search_tree__insert(&bst, &value));
+    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), cmp));
+    TEST_ASSERT(binary_search_tree__delete(&bst, &value));
+}
+
 void test_tree_using_predetermined_data(void)
 {
     FILE *input_file = get_file_handle(input_filename);
@@ -44,7 +75,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    bst_node_s *root = NULL, *ptr = NULL;
+    bst_t bst = {0};
+    bst_node_t *ptr = NULL;
+
+    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -54,13 +88,13 @@ void test_tree_using_predetermined_data(void)
 
             switch (cmd)
             {
-            case 'i': root = binary_search_tree__insert(root, value);
+            case 'i': TEST_ASSERT(binary_search_tree__insert(&bst, &value));
                 break;
 
-            case 'd': root = binary_search_tree__delete(root, value);
+            case 'd': TEST_ASSERT(binary_search_tree__delete(&bst, &value));
                 break;
 
-            case 'f': ptr = binary_search_tree__find(root, value);
+            case 'f': TEST_ASSERT(binary_search_tree__find(&bst, &value, ptr));
                 break;
             
             default:
@@ -68,7 +102,7 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(root);
+            inorder_str_write(bst.root);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -107,14 +141,14 @@ static FILE *get_file_handle(const char *filename)
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(bst_node_s *root)
+static void inorder_str_write(bst_node_t *root)
 {
     char local_str_buf[STR_BUF_SIZE];
 
     if (root) {
         inorder_str_write(root->left);
 
-        sprintf(local_str_buf, "%i ", root->val);
+        sprintf(local_str_buf, "%i ", *((int*)root->obj));
         strcat(write_str_buf, local_str_buf);
 
         inorder_str_write(root->right);

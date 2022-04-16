@@ -21,7 +21,18 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(rb_node_s *root);
+static void inorder_str_write(rb_node_t *root);
+
+/**
+ * Compare function for BST
+ */
+int cmp(const void *a, const void *b) {
+
+    int a_int = *((int*)a);
+    int b_int = *((int*)b);
+
+    return a_int - b_int;
+}
 
 /**
  * Test functions
@@ -37,6 +48,26 @@ void tearDown(void)
 
 }
 
+void test_init_with_insert(void)
+{
+    const unsigned int expected_init_element_size = 0;
+    const compare_function_t expected_init_func_value = NULL;
+    const unsigned int expected_init_size = 0;
+    rb_t rb = {0};
+    int value = 0;
+
+    TEST_ASSERT_EQUAL(expected_init_element_size, rb.element_size);
+    TEST_ASSERT_EQUAL(expected_init_func_value, rb.cmp_f);
+    TEST_ASSERT_EQUAL(expected_init_size, rb.size);
+
+    TEST_ASSERT_FALSE(red_black_tree__init(&rb, 0, cmp));
+    TEST_ASSERT_FALSE(red_black_tree__init(&rb, sizeof(int), NULL));
+    TEST_ASSERT(red_black_tree__init(&rb, sizeof(int), cmp));
+    TEST_ASSERT(red_black_tree__insert(&rb, &value));
+    TEST_ASSERT_FALSE(red_black_tree__init(&rb, sizeof(int), cmp));
+    TEST_ASSERT(red_black_tree__delete(&rb, &value));
+}
+
 void test_tree_using_predetermined_data(void)
 {
     FILE *input_file = get_file_handle(input_filename);
@@ -44,7 +75,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    rb_node_s *root = NULL, *ptr = NULL;
+    rb_t rb = {0};
+    rb_node_t *ptr = NULL;
+
+    TEST_ASSERT(red_black_tree__init(&rb, sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -54,13 +88,13 @@ void test_tree_using_predetermined_data(void)
 
             switch (cmd)
             {
-            case 'i': TEST_ASSERT(red_black_tree__insert(&root, value));
+            case 'i': TEST_ASSERT(red_black_tree__insert(&rb, &value));
                 break;
 
-            case 'd': TEST_ASSERT(red_black_tree__delete(&root, value));
+            case 'd': TEST_ASSERT(red_black_tree__delete(&rb, &value));
                 break;
 
-            case 'f': ptr = red_black_tree__find(root, value);
+            case 'f': TEST_ASSERT(red_black_tree__find(&rb, &value, ptr));
                 break;
             
             default:
@@ -68,7 +102,7 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(root);
+            inorder_str_write(rb.root);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -107,14 +141,14 @@ static FILE *get_file_handle(const char *filename)
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(rb_node_s *root)
+static void inorder_str_write(rb_node_t *root)
 {
     char local_str_buf[STR_BUF_SIZE];
 
     if (root) {
         inorder_str_write(root->left);
 
-        sprintf(local_str_buf, "%i:%c ", root->val, root->color == RED ? 'R' : 'B');
+        sprintf(local_str_buf, "%i:%c ", *((int*)root->obj), root->color == RED ? 'R' : 'B');
         strcat(write_str_buf, local_str_buf);
 
         inorder_str_write(root->right);
