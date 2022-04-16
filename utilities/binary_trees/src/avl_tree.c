@@ -105,7 +105,9 @@ int avl_tree__find(avl_t *avl, const void *obj, avl_node_t *node)
  */
 static int height(avl_node_t *node)
 {
-    return node ? node->height : 0;
+    int height = 0;
+    if (node) height = node->height;
+    return height;
 }
 
 static unsigned max_height(avl_node_t *node)
@@ -123,7 +125,9 @@ static unsigned max_height(avl_node_t *node)
 
 static int balance_factor(avl_node_t *node)
 {    
-    return node ? height(node->left) - height(node->right) : 0;
+    int bf = 0;
+    if (node) bf = height(node->left) - height(node->right);
+    return bf;
 }
 
 static avl_node_t *left_rotate(avl_node_t *pivot)
