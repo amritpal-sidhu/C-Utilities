@@ -4,7 +4,7 @@ import subprocess
 
 
 ROOT_DIR = Dir(os.path.abspath("../"))
-BUILD_DIR = ROOT_DIR.Dir("_build", create=True)
+BUILD_DIR = ROOT_DIR.Dir("build", create=True)
 
 UNITY_DIR = ROOT_DIR.Dir("Third-Party/Unity")
 GENERATE_TEST_RUNNER = UNITY_DIR.File("auto/generate_test_runner.rb")
@@ -38,7 +38,8 @@ def build_and_run_tests(build_dir, files, env, source_name):
                                     source=files["test_file"].abspath)
 
         test_file = env.Program(target="{path}/test_{s}.out".format(path=test_dir.abspath, s=source_name), source=unity_obj+module_objs)
-        env.Command(target=None, source=test_file, action="./$SOURCE")
+        env.Command(target=None, source=test_file, 
+            action="cd {run_dir} && {test_path}/$SOURCE".format(run_dir=ROOT_DIR.Dir(files["test_file"].dir).abspath if source_name[-4:] == "tree" else ".", test_path=ROOT_DIR.abspath))
 
     return module_objs
 
