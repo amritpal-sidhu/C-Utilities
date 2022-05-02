@@ -2,7 +2,7 @@
 
 ## Description
 
-This repo is for personal learning and practice.  The utilities created could be useful in a future embedded project, but for now I'm primarily using this repo to learn the SCons build tool and integration with ThrowTheSwitch's Unity testing framework.
+This repo is for personal learning and practice.  The utilities created could be useful in a future embedded project, but for now I'm primarily using this repo to learn how to setup build tools, specifically CMake and SCons, and integration with ThrowTheSwitch's Unity testing framework.
 
 ## Dependencies
  * [CMake](https://cmake.org/download/) or [SCons](https://scons.org/doc/production/HTML/scons-user.html#chap-build-install) (depending on the branch)
