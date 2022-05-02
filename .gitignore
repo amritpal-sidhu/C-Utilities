@@ -1,5 +1,5 @@
 
-**/build
+**/_build
 site_scons
 .sconsign.dblite
 .vscode
