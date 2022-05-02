@@ -4,7 +4,7 @@ import subprocess
 
 
 ROOT_DIR = Dir(os.path.abspath("../"))
-BUILD_DIR = ROOT_DIR.Dir("build", create=True)
+BUILD_DIR = ROOT_DIR.Dir("_build", create=True)
 
 UNITY_DIR = ROOT_DIR.Dir("Third-Party/Unity")
 GENERATE_TEST_RUNNER = UNITY_DIR.File("auto/generate_test_runner.rb")
