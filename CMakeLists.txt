@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.22)
-project(C_Utilities)
+project(c_utilities)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 include(cmake/config.cmake)
