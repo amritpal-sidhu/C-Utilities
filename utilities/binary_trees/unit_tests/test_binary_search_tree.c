@@ -72,6 +72,8 @@ void test_tree_using_predetermined_data(void)
 {
     FILE *input_file = get_file_handle(input_filename);
     FILE *output_file = get_file_handle(output_filename);
+    char msg_buf[STR_BUF_SIZE];
+    size_t loop_iteration = 0;
     char cmd;
     int value;
 
@@ -84,6 +86,7 @@ void test_tree_using_predetermined_data(void)
 
         while (fgets(read_str_buf, STR_BUF_SIZE, input_file)) {
 
+            ++loop_iteration;
             sscanf(read_str_buf, "%c%i", &cmd, &value);
 
             switch (cmd)
@@ -110,10 +113,9 @@ void test_tree_using_predetermined_data(void)
             fgets(read_str_buf, STR_BUF_SIZE, output_file);
             read_str_buf[strlen(read_str_buf)-1] = '\0';
 
-            TEST_ASSERT_EQUAL_STRING(read_str_buf, write_str_buf);
-
-            memset(read_str_buf, 0, STR_BUF_SIZE);
-            memset(write_str_buf, 0, STR_BUF_SIZE);
+            snprintf(msg_buf, sizeof(msg_buf), "Failure at input file line: %li", loop_iteration);
+            TEST_ASSERT_EQUAL_STRING_MESSAGE(read_str_buf, write_str_buf, msg_buf);
+            resetTest();
         }
 
         fclose(input_file);
