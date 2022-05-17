@@ -1,4 +1,21 @@
 #!/bin/bash
 
-cmake . -B _build
-cmake --build _build
+set -e
+
+
+cmake_command="cmake"
+
+case $1 in
+
+"rm")  rm -rf _build
+;;
+
+"clean")  $cmake_command --build _build --target clean
+;;
+
+*)
+    $cmake_command -S . -B _build
+    $cmake_command --build _build
+;;
+
+esac
