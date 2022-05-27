@@ -32,9 +32,6 @@ typedef struct rb_s {
 
 
 /**
- *  Initialize the bst handle to 0 or NULL
- *      e.g. rb_t rb = {0};
- * 
  *  Compare function should return:
  *      < 0 when a < b
  *        0 when a == b
@@ -47,9 +44,10 @@ typedef struct rb_s {
  *          False (0) in the case bst handle doesn't exist or objects have been put
  *          into the tree already.
  */
-int red_black_tree__init(rb_t *rb, const unsigned int element_size, compare_function_t cmp_f);
+rb_t *red_black_tree__new(const unsigned int element_size, compare_function_t cmp_f);
+void red_black_tree__delete(rb_t *rb);
 int red_black_tree__insert(rb_t *rb, const void *obj);
-int red_black_tree__delete(rb_t *rb, const void *obj);
+int red_black_tree__remove(rb_t *rb, const void *obj);
 int red_black_tree__min(rb_t *rb, rb_node_t *min);
 int red_black_tree__max(rb_t *rb, rb_node_t *max);
 int red_black_tree__find(rb_t *rb, const void *obj, rb_node_t *node);

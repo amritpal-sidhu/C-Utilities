@@ -11,10 +11,10 @@
 static rb_node_t *left_rotate(rb_node_t **root, rb_node_t *pivot);
 static rb_node_t *right_rotate(rb_node_t **root, rb_node_t *pivot);
 static void insert_fixup(rb_node_t **root, rb_node_t *node);
-static void delete_fixup(rb_node_t **root, rb_node_t *node);
+static void remove_fixup(rb_node_t **root, rb_node_t *node);
 static void transplant(rb_node_t **root, const rb_node_t *old_node, rb_node_t *new_node);
 static void insert_helper(rb_t *rb, rb_node_t **root, rb_node_t *new_node);
-static void delete_helper(rb_t *rb, rb_node_t **root, const void *obj);
+static void remove_helper(rb_t *rb, rb_node_t **root, const void *obj);
 static rb_node_t *min_helper(rb_node_t *node);
 static rb_node_t *max_helper(rb_node_t *node);
 static rb_node_t *find_helper(rb_t *rb, rb_node_t *root, const void *obj);
@@ -24,11 +24,12 @@ static rb_node_t *find_helper(rb_t *rb, rb_node_t *root, const void *obj);
 /**
  * Public function definitions
  */
-int red_black_tree__init(rb_t *rb, const unsigned int element_size, compare_function_t cmp_f)
+rb_t *red_black_tree__new(const unsigned int element_size, compare_function_t cmp_f)
 {
-    int valid = rb && !rb->size && element_size && cmp_f;
+    rb_t *rb = NULL;
+    int valid_args = element_size && cmp_f;
 
-    if (valid) {
+    if (valid_args && (rb=malloc(sizeof(rb_t)))) {
 
         rb->root = NULL;
         rb->element_size = element_size;
@@ -36,7 +37,12 @@ int red_black_tree__init(rb_t *rb, const unsigned int element_size, compare_func
         rb->size = 0;
     }
 
-    return valid;
+    return rb;
+}
+
+void red_black_tree__delete(rb_t *rb)
+{
+    free(rb);
 }
 
 int red_black_tree__insert(rb_t *rb, const void *obj)
@@ -60,12 +66,12 @@ int red_black_tree__insert(rb_t *rb, const void *obj)
     return valid;
 }
 
-int red_black_tree__delete(rb_t *rb, const void *obj)
+int red_black_tree__remove(rb_t *rb, const void *obj)
 {
     int valid = rb && rb->root && rb->cmp_f && obj;
 
     if (valid)
-        delete_helper(rb, &rb->root, obj);
+        remove_helper(rb, &rb->root, obj);
     
     return valid;
 }
@@ -218,7 +224,7 @@ static void insert_fixup(rb_node_t **root, rb_node_t *node)
  * @param  root: reference pointer to the root of the tree
  * @param  node: pointer to the starting node
  */
-static void delete_fixup(rb_node_t **root, rb_node_t *node)
+static void remove_fixup(rb_node_t **root, rb_node_t *node)
 {
     while (node && node != *root && node->color == BLACK) {
 
@@ -357,7 +363,7 @@ static void insert_helper(rb_t *rb, rb_node_t **root, rb_node_t *new_node)
     insert_fixup(root, new_node);
 }
 
-static void delete_helper(rb_t *rb, rb_node_t **root, const void *obj)
+static void remove_helper(rb_t *rb, rb_node_t **root, const void *obj)
 {
     if (*root) {
 
@@ -438,7 +444,7 @@ static void delete_helper(rb_t *rb, rb_node_t **root, const void *obj)
             rb->size -= 1;
 
             if (original_color == BLACK)
-                delete_fixup(root, fixup_node);
+                remove_fixup(root, fixup_node);
 
             if (free_mem_flag) {
                 
