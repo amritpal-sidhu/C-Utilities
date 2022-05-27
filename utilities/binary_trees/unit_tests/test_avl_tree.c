@@ -53,19 +53,16 @@ void test_init_with_insert(void)
     const unsigned int expected_init_element_size = 0;
     const compare_function_t expected_init_func_value = NULL;
     const unsigned int expected_init_size = 0;
-    avl_t avl = {0};
+    avl_t *avl;
     int value = 0;
 
-    TEST_ASSERT_EQUAL(expected_init_element_size, avl.element_size);
-    TEST_ASSERT_EQUAL(expected_init_func_value, avl.cmp_f);
-    TEST_ASSERT_EQUAL(expected_init_size, avl.size);
+    TEST_ASSERT_NULL(avl_tree__new(0, cmp));
+    TEST_ASSERT_NULL(avl_tree__new(sizeof(int), NULL));
+    TEST_ASSERT_NOT_NULL(avl=avl_tree__new(sizeof(int), cmp));
+    TEST_ASSERT(avl_tree__insert(avl, &value));
+    TEST_ASSERT(avl_tree__remove(avl, &value));
 
-    TEST_ASSERT_FALSE(avl_tree__init(&avl, 0, cmp));
-    TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), NULL));
-    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), cmp));
-    TEST_ASSERT(avl_tree__insert(&avl, &value));
-    TEST_ASSERT_FALSE(avl_tree__init(&avl, sizeof(int), cmp));
-    TEST_ASSERT(avl_tree__delete(&avl, &value));
+    avl_tree__delete(avl);
 }
 
 void test_tree_using_predetermined_data(void)
@@ -77,10 +74,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    avl_t avl = {0};
+    avl_t *avl;
     avl_node_t *ptr = NULL;
 
-    TEST_ASSERT(avl_tree__init(&avl, sizeof(int), cmp));
+    TEST_ASSERT_NOT_NULL(avl=avl_tree__new(sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -91,13 +88,13 @@ void test_tree_using_predetermined_data(void)
 
             switch (cmd)
             {
-            case 'i': TEST_ASSERT(avl_tree__insert(&avl, &value));
+            case 'i': TEST_ASSERT(avl_tree__insert(avl, &value));
                 break;
 
-            case 'd': TEST_ASSERT(avl_tree__delete(&avl, &value));
+            case 'd': TEST_ASSERT(avl_tree__remove(avl, &value));
                 break;
 
-            case 'f': TEST_ASSERT(avl_tree__find(&avl, &value, ptr));
+            case 'f': TEST_ASSERT(avl_tree__find(avl, &value, ptr));
                 break;
             
             default:
@@ -105,7 +102,7 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(avl.root);
+            inorder_str_write(avl->root);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -125,6 +122,8 @@ void test_tree_using_predetermined_data(void)
         TEST_PRINTF("test_tree_using_predetermined_data(): failure to read data files.  input = %p, output = %p\n", input_file, output_file);
         TEST_FAIL();
     }
+
+    avl_tree__delete(avl);
 }
 
 

@@ -22,9 +22,6 @@ typedef struct avl_s {
 
 
 /**
- *  Initialize the avl handle to 0 or NULL
- *      e.g. avl_t avl = {0};
- * 
  *  Compare function should return:
  *      < 0 when a < b
  *        0 when a == b
@@ -37,9 +34,10 @@ typedef struct avl_s {
  *          False (0) in the case bst handle doesn't exist or objects have been put
  *          into the tree already.
  */
-int avl_tree__init(avl_t *avl, const unsigned int element_size, compare_function_t cmp_f);
+avl_t *avl_tree__new(const unsigned int element_size, compare_function_t cmp_f);
+void avl_tree__delete(avl_t *avl);
 int avl_tree__insert(avl_t *avl, const void *obj);
-int avl_tree__delete(avl_t *avl, const void *obj);
+int avl_tree__remove(avl_t *avl, const void *obj);
 int avl_tree__min(avl_t *avl, avl_node_t *min);
 int avl_tree__max(avl_t *avl, avl_node_t *max);
 int avl_tree__find(avl_t *avl, const void *obj, avl_node_t *node);

@@ -23,11 +23,12 @@ static avl_node_t *find_helper(avl_t *avl, avl_node_t *node, const void *obj);
 /**
  * Public function definitions
  */
-int avl_tree__init(avl_t *avl, const unsigned int element_size, compare_function_t cmp_f)
+avl_t *avl_tree__new(const unsigned int element_size, compare_function_t cmp_f)
 {
-    int valid = avl && !avl->size && element_size && cmp_f;
+    avl_t *avl = NULL;
+    int valid_args = element_size && cmp_f;
 
-    if (valid) {
+    if (valid_args && (avl=malloc(sizeof(avl_t)))) {
 
         avl->root = NULL;
         avl->element_size = element_size;
@@ -35,7 +36,12 @@ int avl_tree__init(avl_t *avl, const unsigned int element_size, compare_function
         avl->size = 0;
     }
 
-    return valid;
+    return avl;
+}
+
+void avl_tree__delete(avl_t *avl)
+{
+    free(avl);
 }
 
 int avl_tree__insert(avl_t *avl, const void *obj)
@@ -59,7 +65,7 @@ int avl_tree__insert(avl_t *avl, const void *obj)
     return valid;
 }
 
-int avl_tree__delete(avl_t *avl, const void *obj)
+int avl_tree__remove(avl_t *avl, const void *obj)
 {
     int valid = avl && avl->root && avl->cmp_f && obj;
 
