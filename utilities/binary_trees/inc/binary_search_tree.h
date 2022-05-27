@@ -25,9 +25,6 @@ typedef struct bst_s {
 
 
 /**
- *  Initialize the bst handle to 0 or NULL
- *      e.g. bst_s bst = {0};
- * 
  *  Compare function should return:
  *      < 0 when a < b
  *        0 when a == b
@@ -40,9 +37,10 @@ typedef struct bst_s {
  *          False (0) in the case bst handle doesn't exist or objects have been put
  *          into the tree already.
  */
-int binary_search_tree__init(bst_t *bst, const unsigned int element_size, compare_function_t cmp_f);
+bst_t *binary_search_tree__new(const unsigned int element_size, compare_function_t cmp_f);
+void binary_search_tree__delete(bst_t *bst);
 int binary_search_tree__insert(bst_t *bst, const void *obj);
-int binary_search_tree__delete(bst_t *bst, const void *obj);
+int binary_search_tree__remove(bst_t *bst, const void *obj);
 int binary_search_tree__min(bst_t *bst, bst_node_t *min);
 int binary_search_tree__max(bst_t *bst, bst_node_t *max);
 int binary_search_tree__find(bst_t *bst, const void *obj, bst_node_t *node);

@@ -53,19 +53,16 @@ void test_init_with_insert(void)
     const unsigned int expected_init_element_size = 0;
     const compare_function_t expected_init_func_value = NULL;
     const unsigned int expected_init_size = 0;
-    bst_t bst = {0};
+    bst_t *bst;
     int value = 0;
 
-    TEST_ASSERT_EQUAL(expected_init_element_size, bst.element_size);
-    TEST_ASSERT_EQUAL(expected_init_func_value, bst.cmp_f);
-    TEST_ASSERT_EQUAL(expected_init_size, bst.size);
+    TEST_ASSERT_NULL(binary_search_tree__new(0, cmp));
+    TEST_ASSERT_NULL(binary_search_tree__new(sizeof(int), NULL));
+    TEST_ASSERT_NOT_NULL(bst=binary_search_tree__new(sizeof(int), cmp));
+    TEST_ASSERT(binary_search_tree__insert(bst, &value));
+    TEST_ASSERT(binary_search_tree__remove(bst, &value));
 
-    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, 0, cmp));
-    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), NULL));
-    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), cmp));
-    TEST_ASSERT(binary_search_tree__insert(&bst, &value));
-    TEST_ASSERT_FALSE(binary_search_tree__init(&bst, sizeof(int), cmp));
-    TEST_ASSERT(binary_search_tree__delete(&bst, &value));
+    binary_search_tree__delete(bst);
 }
 
 void test_tree_using_predetermined_data(void)
@@ -77,10 +74,10 @@ void test_tree_using_predetermined_data(void)
     char cmd;
     int value;
 
-    bst_t bst = {0};
+    bst_t *bst;
     bst_node_t *ptr = NULL;
 
-    TEST_ASSERT(binary_search_tree__init(&bst, sizeof(int), cmp));
+    TEST_ASSERT_NOT_NULL(bst=binary_search_tree__new(sizeof(int), cmp));
 
     if (input_file && output_file) {
 
@@ -91,13 +88,13 @@ void test_tree_using_predetermined_data(void)
 
             switch (cmd)
             {
-            case 'i': TEST_ASSERT(binary_search_tree__insert(&bst, &value));
+            case 'i': TEST_ASSERT(binary_search_tree__insert(bst, &value));
                 break;
 
-            case 'd': TEST_ASSERT(binary_search_tree__delete(&bst, &value));
+            case 'd': TEST_ASSERT(binary_search_tree__remove(bst, &value));
                 break;
 
-            case 'f': TEST_ASSERT(binary_search_tree__find(&bst, &value, ptr));
+            case 'f': TEST_ASSERT(binary_search_tree__find(bst, &value, ptr));
                 break;
             
             default:
@@ -105,7 +102,7 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(bst.root);
+            inorder_str_write(bst->root);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -125,6 +122,8 @@ void test_tree_using_predetermined_data(void)
         TEST_PRINTF("test_tree_using_predetermined_data(): failure to read data files.  input = %p, output = %p\n", input_file, output_file);
         TEST_FAIL();
     }
+
+    binary_search_tree__delete(bst);
 }
 
 

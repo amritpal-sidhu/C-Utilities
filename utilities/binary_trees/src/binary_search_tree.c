@@ -9,7 +9,7 @@
  * Private function declarations
  */
 static void insert_helper(bst_t *bst, bst_node_t *node, const void *obj);
-static bst_node_t *delete_helper(bst_t *bst, bst_node_t *node, const void *obj);
+static bst_node_t *remove_helper(bst_t *bst, bst_node_t *node, const void *obj);
 static bst_node_t *min_helper(bst_node_t *node);
 static bst_node_t *max_helper(bst_node_t *node);
 static bst_node_t *find_helper(bst_t *bst, bst_node_t *node, const void *obj);
@@ -17,23 +17,25 @@ static bst_node_t *find_helper(bst_t *bst, bst_node_t *node, const void *obj);
 /**
  * Public function definitions
  */
-int binary_search_tree__init(bst_t *bst, const unsigned int element_size, compare_function_t cmp_f)
+bst_t *binary_search_tree__new(const unsigned int element_size, compare_function_t cmp_f)
 {
-    int valid = bst && !bst->size && element_size && cmp_f;
+    bst_t *bst = NULL;
+    int valid_args = element_size && cmp_f;
 
-    if (valid) {
+    if (valid_args && (bst=malloc(sizeof(bst_t)))) {
 
-        /**
-         * TODO: Might need to recursivly delete previously allocated nodes
-         *       in the case of compiler using the same address.
-         */
         bst->root = NULL;
         bst->element_size = element_size;
         bst->cmp_f = cmp_f;
         bst->size = 0;
     }
 
-    return valid;
+    return bst;
+}
+
+void binary_search_tree__delete(bst_t *bst)
+{
+    free(bst);
 }
 
 int binary_search_tree__insert(bst_t *bst, const void *obj)
@@ -46,12 +48,12 @@ int binary_search_tree__insert(bst_t *bst, const void *obj)
     return valid;
 }
 
-int binary_search_tree__delete(bst_t *bst, const void *obj)
+int binary_search_tree__remove(bst_t *bst, const void *obj)
 {
     int valid = bst && bst->root && bst->cmp_f && obj;
 
     if (valid)
-        bst->root = delete_helper(bst, bst->root, obj);
+        bst->root = remove_helper(bst, bst->root, obj);
 
     return valid;
 }
@@ -126,15 +128,15 @@ static void insert_helper(bst_t *bst, bst_node_t *node, const void *obj)
     bst->size += 1;
 }
 
-static bst_node_t *delete_helper(bst_t *bst, bst_node_t *node, const void *obj)
+static bst_node_t *remove_helper(bst_t *bst, bst_node_t *node, const void *obj)
 {
     if (node) {
 
         if (bst->cmp_f(obj, node->obj) < 0)
-            node->left = delete_helper(bst, node->left, obj);
+            node->left = remove_helper(bst, node->left, obj);
 
         else if (bst->cmp_f(obj, node->obj) > 0)
-            node->right = delete_helper(bst, node->right, obj);
+            node->right = remove_helper(bst, node->right, obj);
 
         else {
 
@@ -162,12 +164,12 @@ static bst_node_t *delete_helper(bst_t *bst, bst_node_t *node, const void *obj)
                 /* Replace with successor approach */
                 // node_to_delete = min_helper(node->right);
                 // node->obj = node_to_delete->obj;
-                // node->right = delete_helper(node->right, node->obj);
+                // node->right = remove_helper(node->right, node->obj);
 
                 /* Replace with predecessor approach */
                 node_to_delete = max_helper(node->left);
                 memcpy(node->obj, node_to_delete->obj, bst->element_size);
-                node->left = delete_helper(bst, node->left, node->obj);
+                node->left = remove_helper(bst, node->left, node->obj);
             }
         }
     }
