@@ -12,7 +12,8 @@ typedef struct stack_s {
 } stack_t;
 
 
-int stack__init(stack_t *s, const unsigned int element_size);
+stack_t *stack__new(const unsigned int element_size);
+void stack__delete(stack_t *s);
 
 int stack__push(stack_t *s, const void *obj);
 int stack__pop(stack_t *s, void *obj);

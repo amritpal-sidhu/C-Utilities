@@ -4,20 +4,23 @@
 #include <string.h>
 
 
-int stack__init(stack_t *s, const unsigned int element_size)
+stack_t *stack__new(const unsigned int element_size)
 {
-    int retval = 0;
+    stack_t *s = NULL;
 
-    if (s && element_size) {
+    if (element_size && (s=malloc(sizeof(stack_t)))) {
 
         s->top = NULL;
         s->element_size = element_size;
         s->size = 0;
-
-        retval = 1;
     }
 
-    return retval;
+    return s;
+}
+
+void stack__delete(stack_t *s)
+{
+    free(s);
 }
 
 int stack__push(stack_t *s, const void *obj)
