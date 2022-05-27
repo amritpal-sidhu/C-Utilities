@@ -13,7 +13,8 @@ typedef struct queue_s {
 } queue_t;
 
 
-int queue__init(queue_t *q, const unsigned int element_size);
+queue_t *queue__new(const unsigned int element_size);
+void queue__delete(queue_t *q);
 
 int queue__push(queue_t *q, const void *obj);
 int queue__pop(queue_t *q, void *obj);

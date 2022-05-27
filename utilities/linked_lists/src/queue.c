@@ -4,21 +4,24 @@
 #include <string.h>
 
 
-int queue__init(queue_t *q, const unsigned int element_size)
+queue_t *queue__new(const unsigned int element_size)
 {
-    int retval = 0;
+    queue_t *q = NULL;
 
-    if (q && element_size) {
+    if (element_size && (q=malloc(sizeof(queue_t)))) {
 
         q->front = NULL;
         q->back = NULL;
         q->element_size = element_size;
         q->size = 0;
-
-        retval = 1;
     }
 
-    return retval;
+    return q;
+}
+
+void queue__delete(queue_t *q)
+{
+    free(q);
 }
 
 int queue__push(queue_t *q, const void *obj)
