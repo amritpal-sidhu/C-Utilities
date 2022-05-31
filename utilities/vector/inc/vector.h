@@ -16,14 +16,6 @@ typedef struct {
 
 } vector3d_t;
 
-typedef struct {
-
-    float r;
-    float g;
-    float b;
-
-} color_t;
-
 
 double vector2d__mag(const vector2d_t a);
 double vector2d__distance(const vector2d_t a, const vector2d_t b);
