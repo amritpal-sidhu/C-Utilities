@@ -3,8 +3,10 @@ project(c_utilities C)
 
 include(cmake/config.cmake)
 
-add_subdirectory(Third-Party/Unity)
-target_compile_definitions(unity PUBLIC UNITY_INCLUDE_CONFIG_H)
+if (NOT TARGET unity)
+    add_subdirectory(Third-Party/Unity)
+    target_compile_definitions(unity PUBLIC UNITY_INCLUDE_CONFIG_H)
+endif()
 
 option(SKIP_BINARY_TREES_LIB "Skip building the binary trees library" OFF)
 option(SKIP_LINKED_LISTS_LIB "Skip building the linked lists library" OFF)
