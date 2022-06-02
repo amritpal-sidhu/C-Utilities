@@ -1,99 +1,87 @@
 #include "logging.h"
 
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 
-FILE *log_fp;
-static char current_filepath[128];
-
-
-int logging__open(const char *filepath, const char *mode)
+log_t *logging__open(const char *filepath, const char *mode)
 {
     int success = 0;
+    const size_t path_strlen = strlen(filepath);
+    log_t *log_handle = malloc(sizeof(log_t));
 
-    if (log_fp=fopen(filepath, mode)) {
-        strcpy(current_filepath, filepath);
+    if (log_handle &&
+        (log_handle->log_fp=fopen(filepath, mode)) &&
+        (log_handle->filepath=malloc(path_strlen+1))) {
+        
+        strncpy(log_handle->filepath, filepath, path_strlen);
+        log_handle->filepath[path_strlen] = '\0';
         success = 1;
     }
+    else
+        log_handle = NULL;
 
-    return success;
+    return log_handle;
 }
 
-void logging__close(void)
+void logging__close(const log_t *log_handle)
 {
-    current_filepath[0] = '\0';
-    fclose(log_fp);
+    if (log_handle)
+        fclose(log_handle->log_fp);
 }
 
-int logging__delete(void)
+void logging__delete(log_t *log_handle)
 {
-    int success = 0;
-
-    if (log_fp && !remove(current_filepath))
-        success = 1;
-
-    return success;
+    if (log_handle)
+        free(log_handle);
 }
 
-int logging__read(char *buffer, const size_t buffer_size)
+int logging__read(const log_t *log_handle, char *buffer, const size_t buffer_size)
 {
     int success = 0;
-    const size_t file_size = get_file_size(log_fp);
+    const size_t file_size = get_file_size(log_handle->log_fp);
 
     /**
      * TODO: check file mode
      */
-    if (buffer_size >= file_size)
-        success = fread(buffer, sizeof(char), file_size, log_fp);
+    if (log_handle && buffer_size >= file_size)
+        success = fread(buffer, sizeof(char), file_size, log_handle->log_fp);
 
     return success;
 }
 
-int logging__write(const log_level_t log_level, const char *formatted_string, ...)
+int logging__write(log_t *log_handle, const log_level_t log_level, const char *message)
 {
     int success = 0;
 
-    if (log_fp) {
-
-        va_list vl;
-        va_start(vl, formatted_string);
+    if (log_handle) {
 
         switch (log_level) {
 
             case NONE:
-                fprintf(log_fp, "[%f seconds]: ", (float)clock()/CLOCKS_PER_SEC);
-                fprintf(log_fp, formatted_string, vl);
-                fprintf(log_fp, "\n");
+                fprintf(log_handle->log_fp, "[%f seconds]: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
                 success = 1;
                 break;
             
             case STATUS:
-                fprintf(log_fp, "[%f seconds] STATUS: ", (float)clock()/CLOCKS_PER_SEC);
-                fprintf(log_fp, formatted_string, vl);
-                fprintf(log_fp, "\n");
+                fprintf(log_handle->log_fp, "[%f seconds] STATUS: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
                 success = 1;
                 break;
 
             case DEBUG:
-                fprintf(log_fp, "[%f seconds] DEBUG: ", (float)clock()/CLOCKS_PER_SEC);
-                fprintf(log_fp, formatted_string, vl);
-                fprintf(log_fp, "\n");
+                fprintf(log_handle->log_fp, "[%f seconds] DEBUG: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
                 success = 1;
                 break;
 
             case WARNING:
-                fprintf(log_fp, "[%f seconds] WARNING: ", (float)clock()/CLOCKS_PER_SEC);
-                fprintf(log_fp, formatted_string, vl);
-                fprintf(log_fp, "\n");
+                fprintf(log_handle->log_fp, "[%f seconds] WARNING: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
                 success = 1;
                 break;
 
             case ERROR:
-                fprintf(log_fp, "[%f seconds] ERROR: ", (float)clock()/CLOCKS_PER_SEC);
-                fprintf(log_fp, formatted_string, vl);
-                fprintf(log_fp, "\n");
+                fprintf(log_handle->log_fp, "[%f seconds] ERROR: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
                 success = 1;
                 break;
 
