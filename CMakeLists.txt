@@ -14,6 +14,7 @@ endif()
 option(SKIP_BINARY_TREES_LIB "Skip building the binary trees library" OFF)
 option(SKIP_LINKED_LISTS_LIB "Skip building the linked lists library" OFF)
 option(SKIP_VECTOR_LIB "Skip building the vector library" OFF)
+option(SKIP_LOGGING_LIB "Skip building the logging library" OFF)
 
 if (NOT SKIP_BINARY_TREES_LIB)
     add_subdirectory(utilities/binary_trees)
@@ -25,4 +26,8 @@ endif()
 
 if (NOT SKIP_VECTOR_LIB)
     add_subdirectory(utilities/vector)
+endif()
+
+if (NOT SKIP_LOGGING_LIB)
+    add_subdirectory(utilities/logging)
 endif()
