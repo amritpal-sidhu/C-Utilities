@@ -57,6 +57,30 @@ void test_write_log_level_none(void)
     logging__delete(log_handle);
 }
 
+void test_write_log_level_none_va(void)
+{
+    const char expected[] = ": Testing writing va count is 2\n";
+    const char mode[] = "w+";
+    
+    log_t *log_handle;
+    char actual[STR_BUF_SIZE];
+    char msg_buf[STR_BUF_SIZE];
+
+    memset(actual, 0, sizeof(actual));
+
+    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
+    TEST_ASSERT(logging__write(log_handle, NONE, "Testing writing %s %i", "va count is", 2));
+    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+
+    // ignore the timestamp
+    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
+
+    logging__close(log_handle);
+    logging__delete(log_handle);
+}
+
 void test_write_log_level_status(void)
 {
     const char expected[] = " STATUS: Testing writing\n";

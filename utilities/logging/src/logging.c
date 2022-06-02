@@ -52,42 +52,57 @@ int logging__read(const log_t *log_handle, char *buffer, const size_t buffer_siz
     return success;
 }
 
-int logging__write(log_t *log_handle, const log_level_t log_level, const char *message)
+int logging__write(log_t *log_handle, const log_level_t log_level, const char *format, ...)
 {
     int success = 0;
 
     if (log_handle) {
 
+        va_list args;
+        va_start(args, format);
+
         switch (log_level) {
 
             case NONE:
-                fprintf(log_handle->log_fp, "[%f seconds]: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
+                fprintf(log_handle->log_fp, "[%f seconds]: ", (float)clock()/CLOCKS_PER_SEC);
+                vfprintf(log_handle->log_fp, format, args);
+                fprintf(log_handle->log_fp, "\n");
                 success = 1;
                 break;
             
             case STATUS:
-                fprintf(log_handle->log_fp, "[%f seconds] STATUS: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
+                fprintf(log_handle->log_fp, "[%f seconds] STATUS: ", (float)clock()/CLOCKS_PER_SEC);
+                vfprintf(log_handle->log_fp, format, args);
+                fprintf(log_handle->log_fp, "\n");
                 success = 1;
                 break;
 
             case DEBUG:
-                fprintf(log_handle->log_fp, "[%f seconds] DEBUG: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
+                fprintf(log_handle->log_fp, "[%f seconds] DEBUG: ", (float)clock()/CLOCKS_PER_SEC);
+                vfprintf(log_handle->log_fp, format, args);
+                fprintf(log_handle->log_fp, "\n");
                 success = 1;
                 break;
 
             case WARNING:
-                fprintf(log_handle->log_fp, "[%f seconds] WARNING: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
+                fprintf(log_handle->log_fp, "[%f seconds] WARNING: ", (float)clock()/CLOCKS_PER_SEC);
+                vfprintf(log_handle->log_fp, format, args);
+                fprintf(log_handle->log_fp, "\n");
                 success = 1;
                 break;
 
             case ERROR:
-                fprintf(log_handle->log_fp, "[%f seconds] ERROR: %s\n", (float)clock()/CLOCKS_PER_SEC, message);
+                fprintf(log_handle->log_fp, "[%f seconds] ERROR: ", (float)clock()/CLOCKS_PER_SEC);
+                vfprintf(log_handle->log_fp, format, args);
+                fprintf(log_handle->log_fp, "\n");
                 success = 1;
                 break;
 
             default:
                 break;
         }
+
+        va_end(args);
     }
 
     return success;
