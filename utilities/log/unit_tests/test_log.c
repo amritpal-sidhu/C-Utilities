@@ -28,9 +28,9 @@ void test_open_close_and_delete(void)
     
     log_t *log_handle;
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_write_log_level_none(void)
@@ -44,17 +44,17 @@ void test_write_log_level_none(void)
 
     memset(actual, 0, sizeof(actual));
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    TEST_ASSERT(logging__write(log_handle, NONE, "Testing writing"));
-    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, NONE, "Testing writing"));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore the timestamp
     const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_write_log_level_none_va(void)
@@ -68,17 +68,17 @@ void test_write_log_level_none_va(void)
 
     memset(actual, 0, sizeof(actual));
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    TEST_ASSERT(logging__write(log_handle, NONE, "Testing writing %s %i", "va count is", 2));
-    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, NONE, "Testing writing %s %i", "va count is", 2));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore the timestamp
     const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_write_log_level_status(void)
@@ -92,17 +92,17 @@ void test_write_log_level_status(void)
 
     memset(actual, 0, sizeof(actual));
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    TEST_ASSERT(logging__write(log_handle, STATUS, "Testing writing"));
-    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, STATUS, "Testing writing"));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore the timestamp
     const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_write_log_level_debug(void)
@@ -116,17 +116,17 @@ void test_write_log_level_debug(void)
 
     memset(actual, 0, sizeof(actual));
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    TEST_ASSERT(logging__write(log_handle, DEBUG, "Testing writing"));
-    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, DEBUG, "Testing writing"));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore the timestamp
     const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_write_log_level_warning(void)
@@ -140,17 +140,17 @@ void test_write_log_level_warning(void)
 
     memset(actual, 0, sizeof(actual));
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    TEST_ASSERT(logging__write(log_handle, WARNING, "Testing writing"));
-    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, WARNING, "Testing writing"));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore the timestamp
     const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_write_log_level_error(void)
@@ -164,17 +164,17 @@ void test_write_log_level_error(void)
 
     memset(actual, 0, sizeof(actual));
 
-    TEST_ASSERT_NOT_NULL(log_handle=logging__open(test_filepath, mode));
-    TEST_ASSERT(logging__write(log_handle, ERROR, "Testing writing"));
-    TEST_ASSERT(logging__read(log_handle, actual, sizeof(actual)));
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, ERROR, "Testing writing"));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore the timestamp
     const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
-    logging__close(log_handle);
-    logging__delete(log_handle);
+    log__close(log_handle);
+    log__delete(log_handle);
 }
 
 void test_get_file_size(void)

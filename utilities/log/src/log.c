@@ -6,7 +6,7 @@
 #include <time.h>
 
 
-log_t *logging__open(const char *filepath, const char *mode)
+log_t *log__open(const char *filepath, const char *mode)
 {
     int success = 0;
     const size_t path_strlen = strlen(filepath);
@@ -26,19 +26,19 @@ log_t *logging__open(const char *filepath, const char *mode)
     return log_handle;
 }
 
-void logging__close(const log_t *log_handle)
+void log__close(const log_t *log_handle)
 {
     if (log_handle)
         fclose(log_handle->log_fp);
 }
 
-void logging__delete(log_t *log_handle)
+void log__delete(log_t *log_handle)
 {
     if (log_handle)
         free(log_handle);
 }
 
-int logging__read(const log_t *log_handle, char *buffer, const size_t buffer_size)
+int log__read(const log_t *log_handle, char *buffer, const size_t buffer_size)
 {
     int success = 0;
     const size_t file_size = get_file_size(log_handle->log_fp);
@@ -52,7 +52,7 @@ int logging__read(const log_t *log_handle, char *buffer, const size_t buffer_siz
     return success;
 }
 
-int logging__write(log_t *log_handle, const log_level_t log_level, const char *format, ...)
+int log__write(log_t *log_handle, const log_level_t log_level, const char *format, ...)
 {
     int success = 0;
 
