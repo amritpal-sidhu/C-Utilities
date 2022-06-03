@@ -1,6 +1,6 @@
-project(logging)
+project(log)
 
-set(LOCAL_SOURCES logging.c)
+set(LOCAL_SOURCES log.c)
 list(TRANSFORM LOCAL_SOURCES PREPEND ${CMAKE_CURRENT_LIST_DIR}/src/)
 
 add_library(${PROJECT_NAME} STATIC ${LOCAL_SOURCES})
