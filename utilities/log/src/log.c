@@ -6,6 +6,19 @@
 #include <time.h>
 
 
+#define LOG_LEVEL_ENUM_ITEMS    6
+
+
+const char *log_level_str[LOG_LEVEL_ENUM_ITEMS] = {
+    "",
+    " STATUS",
+    " DEBUG",
+    " DATA",
+    " WARNING",
+    " ERROR"
+};
+
+
 log_t *log__open(const char *filepath, const char *mode)
 {
     int success = 0;
@@ -61,46 +74,10 @@ int log__write(log_t *log_handle, const log_level_t log_level, const char *forma
         va_list args;
         va_start(args, format);
 
-        switch (log_level) {
-
-            case NONE:
-                fprintf(log_handle->log_fp, "[%f seconds]: ", (float)clock()/CLOCKS_PER_SEC);
-                vfprintf(log_handle->log_fp, format, args);
-                fprintf(log_handle->log_fp, "\n");
-                success = 1;
-                break;
-            
-            case STATUS:
-                fprintf(log_handle->log_fp, "[%f seconds] STATUS: ", (float)clock()/CLOCKS_PER_SEC);
-                vfprintf(log_handle->log_fp, format, args);
-                fprintf(log_handle->log_fp, "\n");
-                success = 1;
-                break;
-
-            case DEBUG:
-                fprintf(log_handle->log_fp, "[%f seconds] DEBUG: ", (float)clock()/CLOCKS_PER_SEC);
-                vfprintf(log_handle->log_fp, format, args);
-                fprintf(log_handle->log_fp, "\n");
-                success = 1;
-                break;
-
-            case WARNING:
-                fprintf(log_handle->log_fp, "[%f seconds] WARNING: ", (float)clock()/CLOCKS_PER_SEC);
-                vfprintf(log_handle->log_fp, format, args);
-                fprintf(log_handle->log_fp, "\n");
-                success = 1;
-                break;
-
-            case ERROR:
-                fprintf(log_handle->log_fp, "[%f seconds] ERROR: ", (float)clock()/CLOCKS_PER_SEC);
-                vfprintf(log_handle->log_fp, format, args);
-                fprintf(log_handle->log_fp, "\n");
-                success = 1;
-                break;
-
-            default:
-                break;
-        }
+        fprintf(log_handle->log_fp, "[%f seconds]%s: ", (float)clock()/CLOCKS_PER_SEC, log_level_str[log_level]);
+        vfprintf(log_handle->log_fp, format, args);
+        fprintf(log_handle->log_fp, "\n");
+        success = 1;
 
         va_end(args);
     }

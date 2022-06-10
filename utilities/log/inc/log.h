@@ -8,6 +8,7 @@ typedef enum {
     NONE,
     STATUS,
     DEBUG,
+    DATA,
     WARNING,
     ERROR
 
