@@ -48,8 +48,9 @@ void test_write_log_level_none(void)
     TEST_ASSERT(log__write(log_handle, NONE, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
-    // ignore the timestamp
-    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
@@ -72,8 +73,9 @@ void test_write_log_level_none_va(void)
     TEST_ASSERT(log__write(log_handle, NONE, "Testing writing %s %i", "va count is", 2));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
-    // ignore the timestamp
-    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
@@ -96,8 +98,9 @@ void test_write_log_level_status(void)
     TEST_ASSERT(log__write(log_handle, STATUS, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
-    // ignore the timestamp
-    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
@@ -120,8 +123,9 @@ void test_write_log_level_debug(void)
     TEST_ASSERT(log__write(log_handle, DEBUG, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
-    // ignore the timestamp
-    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
@@ -144,8 +148,9 @@ void test_write_log_level_warning(void)
     TEST_ASSERT(log__write(log_handle, WARNING, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
-    // ignore the timestamp
-    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
@@ -168,8 +173,9 @@ void test_write_log_level_error(void)
     TEST_ASSERT(log__write(log_handle, ERROR, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
-    // ignore the timestamp
-    const char *actual_corrected = strstr(actual, ignore_suffix)+strlen(ignore_suffix);
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
     snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
     TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
 
