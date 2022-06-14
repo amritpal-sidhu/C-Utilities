@@ -1,0 +1,16 @@
+i qr
+i xyz
+i delta
+i abc
+i fg
+i hijklmn
+i op
+i stuvw
+d abc
+d delta
+d fg
+d hijklmn
+d op
+d qr
+d stuvw
+d xyz

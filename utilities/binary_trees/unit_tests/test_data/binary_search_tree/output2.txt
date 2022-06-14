@@ -1,0 +1,15 @@
+qr
+qr xyz
+delta qr xyz
+abc delta qr xyz
+abc delta fg qr xyz
+abc delta fg hijklmn qr xyz
+abc delta fg hijklmn op qr xyz
+abc delta fg hijklmn op qr stuvw xyz
+delta fg hijklmn op qr stuvw xyz
+fg hijklmn op qr stuvw xyz
+hijklmn op qr stuvw xyz
+op qr stuvw xyz
+qr stuvw xyz
+stuvw xyz
+xyz
