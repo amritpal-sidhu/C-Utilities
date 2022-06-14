@@ -31,6 +31,10 @@ log_t *log__open(const char *filepath, const char *mode)
         
         strncpy(log_handle->filepath, filepath, path_strlen);
         log_handle->filepath[path_strlen] = '\0';
+
+        time_t rawtime;
+        time(&rawtime);
+        fprintf(log_handle->log_fp, "[%f seconds]: %s opened on %s", (float)clock()/CLOCKS_PER_SEC, log_handle->filepath, asctime(localtime(&rawtime)));
         success = 1;
     }
     else
@@ -41,8 +45,13 @@ log_t *log__open(const char *filepath, const char *mode)
 
 void log__close(const log_t *log_handle)
 {
-    if (log_handle)
+    if (log_handle) {
+        time_t rawtime;
+        time(&rawtime);
+        fprintf(log_handle->log_fp, "[%f seconds]: %s closed on %s", (float)clock()/CLOCKS_PER_SEC, log_handle->filepath, asctime(localtime(&rawtime)));
+        
         fclose(log_handle->log_fp);
+    }
 }
 
 void log__delete(log_t *log_handle)
