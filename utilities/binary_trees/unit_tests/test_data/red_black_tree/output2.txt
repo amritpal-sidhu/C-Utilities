@@ -1,0 +1,15 @@
+qr:B
+qr:B xyz:R
+delta:R qr:B xyz:R
+abc:R delta:B qr:B xyz:B
+abc:R delta:B fg:R qr:B xyz:B
+abc:B delta:R fg:B hijklmn:R qr:B xyz:B
+abc:B delta:R fg:R hijklmn:B op:R qr:B xyz:B
+abc:B delta:R fg:R hijklmn:B op:R qr:B stuvw:R xyz:B
+delta:B fg:R hijklmn:R op:B qr:B stuvw:R xyz:B
+fg:B hijklmn:R op:B qr:B stuvw:R xyz:B
+hijklmn:B op:R qr:B stuvw:R xyz:B
+op:B qr:B stuvw:R xyz:B
+qr:B stuvw:B xyz:B
+stuvw:B xyz:R
+xyz:B

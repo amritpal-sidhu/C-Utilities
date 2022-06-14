@@ -9,9 +9,16 @@
 
 #define STR_BUF_SIZE    256
 
+
+enum data_type {
+
+    INTEGER,
+    STRING,
+    STRUCT
+
+};
+
 static const char *file_dir = "test_data/red_black_tree";
-static const char *input_filename = "input1.txt";
-static const char *output_filename = "output1.txt";
 
 static char read_str_buf[STR_BUF_SIZE];
 static char write_str_buf[STR_BUF_SIZE];
@@ -21,7 +28,7 @@ static char write_str_buf[STR_BUF_SIZE];
  * Helper functions
  */
 static FILE *get_file_handle(const char *filename);
-static void inorder_str_write(rb_node_t *root);
+static void inorder_str_write(rb_node_t *root, const enum data_type dt);
 
 /**
  * Compare function for BST
@@ -65,10 +72,10 @@ void test_init_with_insert(void)
     red_black_tree__delete(rb);
 }
 
-void test_tree_using_predetermined_data(void)
+void test_tree_using_predetermined_integer_data(void)
 {
-    FILE *input_file = get_file_handle(input_filename);
-    FILE *output_file = get_file_handle(output_filename);
+    FILE *input_file = get_file_handle("input1.txt");
+    FILE *output_file = get_file_handle("output1.txt");
     char msg_buf[STR_BUF_SIZE];
     size_t loop_iteration = 0;
     char cmd;
@@ -102,7 +109,69 @@ void test_tree_using_predetermined_data(void)
             }
 
             /* actual inorder string */
-            inorder_str_write(rb->root);
+            inorder_str_write(rb->root, INTEGER);
+            write_str_buf[strlen(write_str_buf)-1] = '\0';
+
+            /* expected inorder string */
+            memset(read_str_buf, 0, STR_BUF_SIZE);
+            fgets(read_str_buf, STR_BUF_SIZE, output_file);
+            read_str_buf[strlen(read_str_buf)-1] = '\0';
+
+            snprintf(msg_buf, sizeof(msg_buf), "Failure at line %li of test files", loop_iteration);
+            TEST_ASSERT_EQUAL_STRING_MESSAGE(read_str_buf, write_str_buf, msg_buf);
+            resetTest();
+        }
+
+        fclose(input_file);
+        fclose(output_file);
+    }
+    else {
+        TEST_PRINTF("test_tree_using_predetermined_data(): failure to read data files.  input = %p, output = %p\n", input_file, output_file);
+        TEST_FAIL();
+    }
+
+    red_black_tree__delete(rb);
+}
+
+void test_tree_using_predetermined_string_data(void)
+{
+    const unsigned int max_str_size = 16;
+    FILE *input_file = get_file_handle("input2.txt");
+    FILE *output_file = get_file_handle("output2.txt");
+    char msg_buf[STR_BUF_SIZE];
+    size_t loop_iteration = 0;
+    char cmd;
+    char value[max_str_size];
+
+    rb_t *rb;
+    rb_node_t *ptr = NULL;
+
+    TEST_ASSERT_NOT_NULL(rb=red_black_tree__new(max_str_size*sizeof(char), (compare_function_t)strcmp));
+
+    if (input_file && output_file) {
+
+        while (fgets(read_str_buf, STR_BUF_SIZE, input_file)) {
+
+            ++loop_iteration;
+            sscanf(read_str_buf, "%c%s", &cmd, value);
+
+            switch (cmd)
+            {
+            case 'i': TEST_ASSERT(red_black_tree__insert(rb, value));
+                break;
+
+            case 'd': TEST_ASSERT(red_black_tree__remove(rb, value));
+                break;
+
+            case 'f': TEST_ASSERT(red_black_tree__find(rb, value, ptr));
+                break;
+            
+            default:
+                break;
+            }
+
+            /* actual inorder string */
+            inorder_str_write(rb->root, STRING);
             write_str_buf[strlen(write_str_buf)-1] = '\0';
 
             /* expected inorder string */
@@ -142,16 +211,32 @@ static FILE *get_file_handle(const char *filename)
     return fopen(read_str_buf, "r");
 }
 
-static void inorder_str_write(rb_node_t *root)
+static void inorder_str_write(rb_node_t *root, const enum data_type dt)
 {
     char local_str_buf[STR_BUF_SIZE];
 
     if (root) {
-        inorder_str_write(root->left);
+        inorder_str_write(root->left, dt);
 
-        sprintf(local_str_buf, "%i:%c ", *((int*)root->obj), root->color == RED ? 'R' : 'B');
+        switch (dt) {
+
+            case INTEGER:
+                sprintf(local_str_buf, "%i:%c ", *((int*)root->obj), root->color == RED ? 'R' : 'B');
+                break;
+            
+            case STRING:
+                sprintf(local_str_buf, "%s:%c ", ((char*)root->obj), root->color == RED ? 'R' : 'B');
+                break;
+
+            case STRUCT:
+                break;
+
+            default:
+                break;
+        }
+
         strcat(write_str_buf, local_str_buf);
 
-        inorder_str_write(root->right);
+        inorder_str_write(root->right, dt);
     }
 }
