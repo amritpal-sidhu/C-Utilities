@@ -78,15 +78,6 @@ void test_2d_dot_product(void)
     TEST_ASSERT_EQUAL_DOUBLE(expected_output, vector2d__dot_product(a, b));
 }
 
-void test_2d_theta(void)
-{
-    const double expected_output = PI/4;
-    const vector2d_t a = {.i = 1, .j = 1};
-    const vector2d_t b = {.i = 1, .j = 0};
-
-    TEST_ASSERT_EQUAL_DOUBLE(expected_output, vector2d__theta(a, b));
-}
-
 void test_3d_mag(void)
 {
     const double expected_output = 5.3851648071345;
@@ -150,15 +141,6 @@ void test_3d_dot_product(void)
     const vector3d_t b = {.i = 4, .j = 3, .k = -2};
 
     TEST_ASSERT_EQUAL_DOUBLE(expected_output, vector3d__dot_product(a, b));
-}
-
-void test_3d_theta(void)
-{
-    const double expected_output = PI/4;
-    const vector3d_t a = {.i = 1, .j = 1, .k = 0};
-    const vector3d_t b = {.i = 1, .j = 0, .k = 0};
-
-    TEST_ASSERT_EQUAL_DOUBLE(expected_output, vector3d__theta(a, b));
 }
 
 void test_3d_cross_product(void)
