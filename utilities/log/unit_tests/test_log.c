@@ -45,7 +45,7 @@ void test_write_log_level_none(void)
     memset(actual, 0, sizeof(actual));
 
     TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
-    TEST_ASSERT(log__write(log_handle, NONE, "Testing writing"));
+    TEST_ASSERT(log__write(log_handle, LOG_NONE, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore first line and the timestamp
@@ -70,7 +70,32 @@ void test_write_log_level_none_va(void)
     memset(actual, 0, sizeof(actual));
 
     TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
-    TEST_ASSERT(log__write(log_handle, NONE, "Testing writing %s %i", "va count is", 2));
+    TEST_ASSERT(log__write(log_handle, LOG_NONE, "Testing writing %s %i", "va count is", 2));
+    TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
+
+    // ignore first line and the timestamp
+    char *actual_corrected = strstr(actual, "\n")+1;
+    actual_corrected = strstr(actual_corrected, ignore_suffix)+strlen(ignore_suffix);
+    snprintf(msg_buf, sizeof(msg_buf), "filename is %s", log_handle->filepath);
+    TEST_ASSERT_EQUAL_STRING_MESSAGE(expected, actual_corrected, msg_buf);
+
+    log__close(log_handle);
+    log__delete(log_handle);
+}
+
+void test_write_log_level_info(void)
+{
+    const char expected[] = " INFO: Testing writing\n";
+    const char mode[] = "w+";
+    
+    log_t *log_handle;
+    char actual[STR_BUF_SIZE];
+    char msg_buf[STR_BUF_SIZE];
+
+    memset(actual, 0, sizeof(actual));
+
+    TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
+    TEST_ASSERT(log__write(log_handle, LOG_INFO, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore first line and the timestamp
@@ -95,7 +120,7 @@ void test_write_log_level_status(void)
     memset(actual, 0, sizeof(actual));
 
     TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
-    TEST_ASSERT(log__write(log_handle, STATUS, "Testing writing"));
+    TEST_ASSERT(log__write(log_handle, LOG_STATUS, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore first line and the timestamp
@@ -120,7 +145,7 @@ void test_write_log_level_debug(void)
     memset(actual, 0, sizeof(actual));
 
     TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
-    TEST_ASSERT(log__write(log_handle, DEBUG, "Testing writing"));
+    TEST_ASSERT(log__write(log_handle, LOG_DEBUG, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore first line and the timestamp
@@ -145,7 +170,7 @@ void test_write_log_level_warning(void)
     memset(actual, 0, sizeof(actual));
 
     TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
-    TEST_ASSERT(log__write(log_handle, WARNING, "Testing writing"));
+    TEST_ASSERT(log__write(log_handle, LOG_WARNING, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore first line and the timestamp
@@ -170,7 +195,7 @@ void test_write_log_level_error(void)
     memset(actual, 0, sizeof(actual));
 
     TEST_ASSERT_NOT_NULL(log_handle=log__open(test_filepath, mode));
-    TEST_ASSERT(log__write(log_handle, ERROR, "Testing writing"));
+    TEST_ASSERT(log__write(log_handle, LOG_ERROR, "Testing writing"));
     TEST_ASSERT(log__read(log_handle, actual, sizeof(actual)));
 
     // ignore first line and the timestamp

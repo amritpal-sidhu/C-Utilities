@@ -6,11 +6,12 @@
 #include <time.h>
 
 
-#define LOG_LEVEL_ENUM_ITEMS    6
+#define LOG_LEVEL_ENUM_ITEMS    7
 
 
 const char *log_level_str[LOG_LEVEL_ENUM_ITEMS] = {
     "",
+    " INFO",
     " STATUS",
     " DEBUG",
     " DATA",

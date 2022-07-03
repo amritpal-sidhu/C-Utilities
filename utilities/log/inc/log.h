@@ -5,12 +5,13 @@
 
 typedef enum {
 
-    NONE,
-    STATUS,
-    DEBUG,
-    DATA,
-    WARNING,
-    ERROR
+    LOG_NONE,
+    LOG_INFO,
+    LOG_STATUS,
+    LOG_DEBUG,
+    LOG_DATA,
+    LOG_WARNING,
+    LOG_ERROR
 
 } log_level_t;
 
