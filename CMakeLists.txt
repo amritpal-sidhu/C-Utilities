@@ -11,6 +11,7 @@ if (NOT TARGET unity)
 endif()
 
 
+option(SKIP_C_UTILITIES_TESTS "Skip running unit tests" OFF)
 option(SKIP_BINARY_TREES_LIB "Skip building the binary trees library" OFF)
 option(SKIP_LINKED_LISTS_LIB "Skip building the linked lists library" OFF)
 option(SKIP_VECTOR_LIB "Skip building the vector library" OFF)
