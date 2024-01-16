@@ -37,7 +37,7 @@ log_t *log__open(const char *filepath, const char *mode)
         time(&rawtime);
         timeinfo = localtime(&rawtime);
         strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
-        fprintf(log_handle->log_fp, "[%f seconds]: %s opened on %s\n", (float)clock()/CLOCKS_PER_SEC, log_handle->filepath, time_str);
+        fprintf(log_handle->log_fp, "[%f seconds] %s opened on %s\n", (float)clock()/CLOCKS_PER_SEC, log_handle->filepath, time_str);
         success = 1;
     }
     else
@@ -53,7 +53,7 @@ void log__close(const log_t *log_handle)
         time(&rawtime);
         timeinfo = localtime(&rawtime);
         strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
-        fprintf(log_handle->log_fp, "[%f seconds]: %s closed on %s\n", (float)clock()/CLOCKS_PER_SEC, log_handle->filepath, time_str);
+        fprintf(log_handle->log_fp, "[%f seconds] %s closed on %s\n", (float)clock()/CLOCKS_PER_SEC, log_handle->filepath, time_str);
         
         fclose(log_handle->log_fp);
     }
