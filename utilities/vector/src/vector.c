@@ -3,15 +3,15 @@
 #include <math.h>
 
 
-double vector2d__mag(const vector2d_t a)
+float vector2d__mag(const vector2d_t a)
 {
     return sqrt(a.i*a.i + a.j*a.j);
 }
 
-double vector2d__distance(const vector2d_t a, const vector2d_t b)
+float vector2d__distance(const vector2d_t a, const vector2d_t b)
 {
-    const double i = a.i - b.i;
-    const double j = a.j - b.j;
+    const float i = a.i - b.i;
+    const float j = a.j - b.j;
 
     return sqrt(i*i + j*j);
 }
@@ -36,27 +36,27 @@ vector2d_t vector2d__sub(const vector2d_t a, const vector2d_t b)
     return c;
 }
 
-vector2d_t vector2d__scale(const vector2d_t a, const double scalar)
+vector2d_t vector2d__scale(const vector2d_t a, const float scalar)
 {
     vector2d_t result = {.i = scalar * a.i, .j = scalar * a.j};
     return result;
 }
 
-double vector2d__dot_product(const vector2d_t a, const vector2d_t b)
+float vector2d__dot_product(const vector2d_t a, const vector2d_t b)
 {
     return a.i*b.i + a.j*b.j;
 }
 
-double vector3d__mag(const vector3d_t a)
+float vector3d__mag(const vector3d_t a)
 {
     return sqrt(a.i*a.i + a.j*a.j + a.k*a.k);
 }
 
-double vector3d__distance(const vector3d_t a, const vector3d_t b)
+float vector3d__distance(const vector3d_t a, const vector3d_t b)
 {
-    const double i = a.i - b.i;
-    const double j = a.j - b.j;
-    const double k = a.k - b.k;
+    const float i = a.i - b.i;
+    const float j = a.j - b.j;
+    const float k = a.k - b.k;
 
     return sqrt(i*i + j*j + k*k);
 }
@@ -83,13 +83,13 @@ vector3d_t vector3d__sub(const vector3d_t a, const vector3d_t b)
     return c;
 }
 
-vector3d_t vector3d__scale(const vector3d_t a, const double scalar)
+vector3d_t vector3d__scale(const vector3d_t a, const float scalar)
 {
     vector3d_t result = {.i = scalar * a.i, .j = scalar * a.j, .k = scalar * a.k};
     return result;
 }
 
-double vector3d__dot_product(const vector3d_t a, const vector3d_t b)
+float vector3d__dot_product(const vector3d_t a, const vector3d_t b)
 {
     return a.i*b.i + a.j*b.j + a.k*b.k;
 }
