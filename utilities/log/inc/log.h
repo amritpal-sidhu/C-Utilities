@@ -9,6 +9,7 @@ typedef enum {
     LOG_INFO,
     LOG_STATUS,
     LOG_DEBUG,
+    LOG_PERF,
     LOG_DATA,
     LOG_WARNING,
     LOG_ERROR
