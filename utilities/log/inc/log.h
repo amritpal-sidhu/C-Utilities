@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define LOG_LEVEL_ENUM_ITEMS    7
+#define LOG_LEVEL_ENUM_ITEMS    8
 
 typedef enum {
 
