@@ -6,9 +6,6 @@
 #include <time.h>
 
 
-#define LOG_LEVEL_ENUM_ITEMS    7
-
-
 const char *log_level_str[LOG_LEVEL_ENUM_ITEMS] = {
     "",
     " INFO",
@@ -30,6 +27,9 @@ log_t *log__open(const char *filepath, const char *mode)
         (log_handle->log_fp=fopen(filepath, mode)) &&
         (log_handle->filepath=malloc(path_strlen+1))) {
         
+        for (size_t i = 0; i < LOG_LEVEL_ENUM_ITEMS; ++i)
+            log_handle->disabled_log_levels[i] = LOG_LEVEL_ENUM_ITEMS;
+
         strncpy(log_handle->filepath, filepath, path_strlen);
         log_handle->filepath[path_strlen] = '\0';
 
@@ -65,6 +65,22 @@ void log__delete(log_t *log_handle)
         free(log_handle);
 }
 
+int log__disable_log_levels(log_t *log_handle, const log_level_t *levels, const size_t size)
+{
+    int success = 0;
+
+    if (log_handle && size <= LOG_LEVEL_ENUM_ITEMS) {
+
+        memset(log_handle->disabled_log_levels, LOG_LEVEL_ENUM_ITEMS, sizeof(log_level_t)*LOG_LEVEL_ENUM_ITEMS);
+        for (size_t i = 0; i < size; ++i)
+            log_handle->disabled_log_levels[i] = levels[i];
+        
+        success = 1;
+    }
+
+    return success;
+}
+
 int log__read(const log_t *log_handle, char *buffer, const size_t buffer_size)
 {
     int success = 0;
@@ -82,6 +98,9 @@ int log__read(const log_t *log_handle, char *buffer, const size_t buffer_size)
 int log__write(log_t *log_handle, const log_level_t log_level, const char *format, ...)
 {
     int success = 0;
+
+    for (size_t i = 0; i < LOG_LEVEL_ENUM_ITEMS; ++i)
+        if (log_handle->disabled_log_levels[i] == log_level) return success;
 
     if (log_handle) {
 
