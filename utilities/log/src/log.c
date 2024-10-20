@@ -11,6 +11,7 @@ const char *log_level_str[LOG_LEVEL_ENUM_ITEMS] = {
     " INFO",
     " STATUS",
     " DEBUG",
+    " PERFORMANCE",
     " DATA",
     " WARNING",
     " ERROR"
